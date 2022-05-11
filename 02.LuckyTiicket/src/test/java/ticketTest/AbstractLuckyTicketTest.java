@@ -41,9 +41,9 @@ public abstract class AbstractLuckyTicketTest{
 
       //Если получили какой-то результат - сравниваем и выводим на экран
       if(myAnswer == correctAnswer) {
-        System.out.println("Test " + i + " completed successful. Answer:" + myAnswer + " time of complete " + timeOfComplete + " ms");
+        System.out.println("Test " + i + " completed successfully. Answer:" + myAnswer + " time of complete " + timeOfComplete + " ms");
       } else {
-        System.out.println("Test " + i + " completed unsuccessful. My answer:" + myAnswer + ", correct answer: " + correctAnswer);
+        System.out.println("Test " + i + " completed unsuccessfully. My answer:" + myAnswer + ", correct answer: " + correctAnswer);
       }
     }
 

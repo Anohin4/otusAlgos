@@ -1,12 +1,12 @@
 package test.java.ticketTest;
 
-import main.java.middle.AdvancedRecursiveLuckyTicket;
+import main.java.middle.AdvancedLuckyTicket;
 
 public class AdvancedRecursiveTest extends AbstractLuckyTicketTest{
 
   @Override
   long getLuckyCounter(int n) {
-    AdvancedRecursiveLuckyTicket ticket = new AdvancedRecursiveLuckyTicket();
+    AdvancedLuckyTicket ticket = new AdvancedLuckyTicket();
     return ticket.getLuckyCounter(n);
   }
 }

@@ -10,7 +10,7 @@ public class MainTest {
     AdvancedRecursiveTest advancedRecursiveTest = new AdvancedRecursiveTest();
     System.out.println("-----------Simple recursive tests -------------");
     simpleRecursiveTest.runTests();
-    System.out.println("-----------Advanced recursive tests -------------");
+    System.out.println("-----------Advanced lucky ticket counter tests -------------");
     advancedRecursiveTest.runTests();
   }
 
