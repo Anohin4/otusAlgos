@@ -1,8 +1,6 @@
 package main.power;
 
 public class PowerWithMultiplication {
-
-
     public  long power(int a, int n) {
         int p = 1;
         long result = a;
