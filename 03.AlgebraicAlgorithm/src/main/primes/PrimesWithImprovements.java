@@ -2,17 +2,21 @@ package main.primes;
 
 public class PrimesWithImprovements {
 
-    public static void main(String[] args) {
-        System.out.println(countPrimeNumbers(10000));
-    }
-    private static long[] primesArray;
-    private static int counter;
-    public static long countPrimeNumbers(int n) {
+    private long[] primesArray;
+    private int counter;
+
+    public int countPrimeNumbers(int n) {
+        if(n == 0 || n == 1) {
+            return 0;
+        }
+        if(n == 2) {
+            return 1;
+        }
         counter = 1;
-        primesArray = new long[n/2];
+        primesArray = new long[n];
         primesArray[0] = 2;
-        for (int i = 3; i<=n; i++) {
-            if(isPrime(i)) {
+        for (int i = 3; i <= n; i++) {
+            if (isPrime(i)) {
                 primesArray[counter] = i;
                 counter++;
             }
@@ -20,10 +24,10 @@ public class PrimesWithImprovements {
         return counter;
     }
 
-    public static boolean isPrime(int i) {
+    public boolean isPrime(int i) {
         int sqrtI = (int) Math.sqrt(i);
         for (int j = 0; primesArray[j] <= sqrtI; j++) {
-            if(i%primesArray[j] == 0) {
+            if (i % primesArray[j] == 0) {
                 return false;
             }
         }

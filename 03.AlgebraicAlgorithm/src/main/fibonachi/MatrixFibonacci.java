@@ -2,11 +2,7 @@ package main.fibonachi;
 
 public class MatrixFibonacci {
 
-    public static void main(String[] args) {
-        System.out.println(getFibonacciNumber(8));
-    }
-
-    public static long getFibonacciNumber(int n) {
+    public long getFibonacciNumber(int n) {
         if (n == 0) {
             return 0;
         }
@@ -18,7 +14,7 @@ public class MatrixFibonacci {
         return result.getF3();
     }
 
-    private static Matrix powFibonacciMatrix(int pow) {
+    private Matrix powFibonacciMatrix(int pow) {
         Matrix result = new Matrix(1, 1, 1, 0);
 
         for (int n = pow; n > 1; n--) {

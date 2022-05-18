@@ -1,10 +1,12 @@
 package main.fibonachi;
+
 /*
 Матрица поктороая выглядит так
 F3 F2
 F1 F0
  */
 public class Matrix {
+
     private long f3;
     private long f2;
     private long f1;
@@ -17,7 +19,7 @@ public class Matrix {
         this.f0 = f0;
     }
 
-    public Matrix (Matrix matrix) {
+    public Matrix(Matrix matrix) {
         this.f3 = matrix.getF3();
         this.f2 = matrix.getF2();
         this.f1 = matrix.getF1();

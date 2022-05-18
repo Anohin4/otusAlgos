@@ -2,40 +2,37 @@ package main.primes;
 
 public class SieveOfEratosthenes {
 
-    public static void main(String[] args) {
-        System.out.println(countPrimeNumbers(10000));
-    }
-    static long counter;
+     int counter;
 
-    public static long countPrimeNumbers(int n) {
+    public int countPrimeNumbers(int n) {
+
         int p = 2;
         counter = 1;
-        int[] arrayOfAllNumbers = new int[n];
-        for (int j = 2; j < n; j++) {
-            arrayOfAllNumbers[j] = j;
+        int[] arrayOfAllNumbers = new int[n+1];
+        if(n == 0 || n == 1) {
+            return 0;
         }
 
-
-        for (; p<=n; p = getNextPrimeNumber(p, arrayOfAllNumbers)) {
-            if (p == 0) {
+        for (; p <= n; p = getNextPrimeNumber(p, arrayOfAllNumbers)) {
+            if (p == 1) {
                 break;
             }
-            for (int i = p*p; i < n; i += p) {
-                arrayOfAllNumbers[i] = 0;
-
+            //проставляем девятки в те числа, которые нам не интересны
+            for (int i = p + p; i <= n; i += p) {
+                arrayOfAllNumbers[i] = 9;
             }
         }
         return counter;
     }
 
-    static public int getNextPrimeNumber(int currentP, int[] array) {
+    public int getNextPrimeNumber(int currentP, int[] array) {
         for (int i = currentP + 1; i < array.length; i++) {
-            if (array[i] != 0) {
+            if (array[i] == 0) {
                 counter++;
                 return i;
             }
         }
-        return 0;
+        return 1;
     }
 
 }
