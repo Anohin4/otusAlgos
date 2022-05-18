@@ -1,23 +1,25 @@
 package main.fibonachi;
 
+import java.math.BigInteger;
+
 public class IterationFibonacci {
 
-    public long getFibonacciNumber(int n) {
-        long f1 = 1;
-        long f2 = 1;
-        long result = 0;
+    public String getFibonacciNumber(int n) {
+        BigInteger f1 = BigInteger.ONE;
+        BigInteger f2 = BigInteger.ONE;;
+        BigInteger result = BigInteger.ZERO;
         if (n == 0) {
-            return 0;
+            return BigInteger.ZERO.toString();
         }
         if (n == 1 || n == 2) {
-            return 1;
+            return BigInteger.ONE.toString();
         }
         for (n -= 2; n > 0; n--) {
-            result = f2 + f1;
+            result = f2.add(f1);
             f1 = f2;
             f2 = result;
         }
-        return result;
+        return result.toString();
 
     }
 

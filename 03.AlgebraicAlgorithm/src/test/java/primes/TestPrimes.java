@@ -1,4 +1,4 @@
-package test.java;
+package test.java.primes;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -7,7 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
 
-public class TestUtil {
+public class TestPrimes {
 
     public static void runTest(String catalogName, int amountOfTests, UnaryOperator<Integer> operator) {
         runTest(catalogName, amountOfTests, 5000, operator);

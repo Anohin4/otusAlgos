@@ -7,7 +7,6 @@ public class FibonacciWithGoldenRatio {
     }
 
     private double getGoldenRatio(int n) {
-
         double f = (Math.sqrt(5) + 1) / 2;
         return Math.pow(f, n) / Math.sqrt(5) + 0.5;
     }

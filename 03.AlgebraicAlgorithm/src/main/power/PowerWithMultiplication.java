@@ -2,13 +2,13 @@ package main.power;
 
 public class PowerWithMultiplication {
 
-    public int power(int a, int n) {
-        int p = 1;
-        int result = a;
+    public double power(double a, int n) {
+        double p = 1;
+        double result = a;
         for (; p <= n / 2; p *= 2) {
             result *= result;
         }
-        for (int i = p - n; i > 0; i--) {
+        for (double i = p - n; i > 0; i--) {
             result *= a;
         }
         return result;
