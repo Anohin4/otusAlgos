@@ -1,6 +1,6 @@
 package test.java.power;
 
-import static test.java.power.TestPow.runPowerTest;
+import static test.java.power.TestPowTemplate.runPowerTest;
 
 import main.power.IterationPow;
 import main.power.PowerAdvanced;
@@ -16,7 +16,7 @@ public class PowerTest {
         int amountOfTests = 9;
 
         System.out.println("-----------Iteration tests -------------");
-        runPowerTest(catalog, amountOfTests, iterationPow::pow);
+        runPowerTest(catalog, amountOfTests, iterationPow::power);
         System.out.println("-----------Advanced tests -------------");
         runPowerTest(catalog, amountOfTests, advanced::power);
         System.out.println("-----------Multiplication tests -------------");

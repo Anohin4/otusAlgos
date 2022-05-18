@@ -1,6 +1,6 @@
 package test.java.primes;
 
-import static test.java.primes.TestPrimes.runTest;
+import static test.java.primes.TestPrimesTemplate.runTest;
 
 import main.primes.LinearEratosthenes;
 import main.primes.PrimesWithImprovements;

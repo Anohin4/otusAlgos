@@ -1,26 +1,26 @@
-package test.java.primes;
+package test.java.power;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.UnaryOperator;
+import java.util.function.BiFunction;
 
-public class TestPrimes {
+public class TestPowTemplate {
 
-    public static void runTest(String catalogName, int amountOfTests, UnaryOperator<Integer> operator) {
-        runTest(catalogName, amountOfTests, 5000, operator);
+    public static void runPowerTest(String catalogName, int amountOfTests, BiFunction<Double, Double, Double> biFunction) {
+        runPowerTest(catalogName, amountOfTests, 20000, biFunction);
     }
-    public static void runTest(String catalogName, int amountOfTests, int timeout, UnaryOperator<Integer> operator) {
+    public static void runPowerTest(String catalogName, int amountOfTests, int timeout, BiFunction<Double, Double, Double> biFunction) {
         for (int i = 0; i <= amountOfTests; i++) {
-            int n;
-            long correctAnswer;
-            long myAnswer;
+            String[] n;
+            double correctAnswer;
+            double myAnswer;
 
             //Берем данные по заданию из файлов
             try {
-                n = getTestTaskWithOneNumber(catalogName, i);
+                n = getTestTask(catalogName, i);
                 correctAnswer = getTestAnswer(catalogName, i);
             } catch (IOException e) {
                 System.out.println("Can't find files for test " + i);
@@ -31,7 +31,7 @@ public class TestPrimes {
             long startTime = System.currentTimeMillis();
             try {
                 myAnswer = CompletableFuture
-                        .supplyAsync(() -> operator.apply(n))
+                        .supplyAsync(() -> biFunction.apply(Double.parseDouble(n[0]), Double.parseDouble(n[1])))
                         .get(timeout, TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 System.out.printf("Unsuccessful test %d or time limit exceeded, stopped testing for that section", i);
@@ -48,28 +48,32 @@ public class TestPrimes {
             } else {
                 System.out.println(
                         "Test " + i + " completed unsuccessfully. My answer:" + myAnswer + ", correct answer: "
-                                + correctAnswer);
+                                + correctAnswer + " time of complete "
+                                + timeOfComplete + " ms");
             }
         }
 
 
     }
 
-    private static int getTestTaskWithOneNumber(String catalogName, int n) throws IOException {
+    private static String[] getTestTask(String catalogName, int n) throws IOException {
         String pathFileIn =
                 System.getProperty("user.dir") + "/03.AlgebraicAlgorithm/src/test/resources/" + catalogName + "/test." + n
                         + ".in";
         try (BufferedReader bufferedInputStream = new BufferedReader(new FileReader(pathFileIn))) {
-            return Integer.parseInt(bufferedInputStream.readLine());
+            String[] result = new String[2];
+            result[0] = bufferedInputStream.readLine();
+            result[1] = bufferedInputStream.readLine();
+            return result;
         }
     }
 
-    private static long getTestAnswer(String catalogName, int n) throws IOException {
+    private static double getTestAnswer(String catalogName, int n) throws IOException {
         String pathFileIn =
                 System.getProperty("user.dir") + "/03.AlgebraicAlgorithm/src/test/resources/" + catalogName + "/test." + n
                         + ".out";
         try (BufferedReader bufferedInputStream = new BufferedReader(new FileReader(pathFileIn))) {
-            return Long.parseLong(bufferedInputStream.readLine());
+            return Double.parseDouble(bufferedInputStream.readLine());
         }
     }
 

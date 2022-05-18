@@ -1,22 +1,22 @@
-package test.java.fibonacci;
+package test.java.primes;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
-public class TestFiboUtil {
+public class TestPrimesTemplate {
 
-    public static void runFibonacciTest(String catalogName, int amountOfTests, Function<Integer, String> operator) {
-        runFibonacciTest(catalogName, amountOfTests, 5000, operator);
+    public static void runTest(String catalogName, int amountOfTests, UnaryOperator<Integer> operator) {
+        runTest(catalogName, amountOfTests, 5000, operator);
     }
-    public static void runFibonacciTest(String catalogName, int amountOfTests, int timeout, Function<Integer, String> operator) {
+    public static void runTest(String catalogName, int amountOfTests, int timeout, UnaryOperator<Integer> operator) {
         for (int i = 0; i <= amountOfTests; i++) {
             int n;
-            String correctAnswer;
-            String myAnswer;
+            long correctAnswer;
+            long myAnswer;
 
             //Берем данные по заданию из файлов
             try {
@@ -42,19 +42,20 @@ public class TestFiboUtil {
             long timeOfComplete = System.currentTimeMillis() - startTime;
 
             //Если получили какой-то результат - сравниваем и выводим на экран
-            if (myAnswer.equals(correctAnswer)) {
-                System.out.println("Test " + i + " completed successfully. Time of complete "
+            if (myAnswer == correctAnswer) {
+                System.out.println("Test " + i + " completed successfully. Answer:" + myAnswer + " time of complete "
                         + timeOfComplete + " ms");
             } else {
                 System.out.println(
-                        "Test " + i + " completed unsuccessfully.");
+                        "Test " + i + " completed unsuccessfully. My answer:" + myAnswer + ", correct answer: "
+                                + correctAnswer);
             }
         }
 
 
     }
 
-    private static Integer getTestTaskWithOneNumber(String catalogName, int n) throws IOException {
+    private static int getTestTaskWithOneNumber(String catalogName, int n) throws IOException {
         String pathFileIn =
                 System.getProperty("user.dir") + "/03.AlgebraicAlgorithm/src/test/resources/" + catalogName + "/test." + n
                         + ".in";
@@ -63,12 +64,12 @@ public class TestFiboUtil {
         }
     }
 
-    private static String getTestAnswer(String catalogName, int n) throws IOException {
+    private static long getTestAnswer(String catalogName, int n) throws IOException {
         String pathFileIn =
                 System.getProperty("user.dir") + "/03.AlgebraicAlgorithm/src/test/resources/" + catalogName + "/test." + n
                         + ".out";
         try (BufferedReader bufferedInputStream = new BufferedReader(new FileReader(pathFileIn))) {
-            return bufferedInputStream.readLine();
+            return Long.parseLong(bufferedInputStream.readLine());
         }
     }
 

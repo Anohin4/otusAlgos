@@ -1,7 +1,7 @@
 package test.java.fibonacci;
 
-import static test.java.primes.TestPrimes.runTest;
-import static test.java.fibonacci.TestFiboUtil.runFibonacciTest;
+import static test.java.primes.TestPrimesTemplate.runTest;
+import static test.java.fibonacci.TestFiboTemplate.runFibonacciTest;
 
 import main.fibonachi.IterationFibonacci;
 import main.fibonachi.MatrixFibonacci;
