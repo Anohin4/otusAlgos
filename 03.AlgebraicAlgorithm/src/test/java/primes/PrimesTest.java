@@ -18,11 +18,11 @@ public class PrimesTest {
         SieveOfEratosthenes eratosthenes = new SieveOfEratosthenes();
         LinearEratosthenes linearEratosthenes = new LinearEratosthenes();
         System.out.println("-----------Iteration prime counting tests -------------");
-        runTest(catalogName, amountOfTests, iteration::countPrimeNumbers);
+        runTest(catalogName, amountOfTests, 30000, iteration::countPrimeNumbers);
         System.out.println("-----------Iteration prime with optimisation counting tests -------------");
-        runTest(catalogName, amountOfTests, improvedPrimes::countPrimeNumbers);
+        runTest(catalogName, amountOfTests, 30000, improvedPrimes::countPrimeNumbers);
         System.out.println("-----------Sieve of Eratosthenes counting tests -------------");
-        runTest(catalogName, amountOfTests,20000, eratosthenes::countPrimeNumbers);
+        runTest(catalogName, amountOfTests,30000, eratosthenes::countPrimeNumbers);
         System.out.println("-----------Linear sieve of Eratosthenes counting tests -------------");
         runTest(catalogName, amountOfTests, 30000, linearEratosthenes::countPrimeNumbers);
     }

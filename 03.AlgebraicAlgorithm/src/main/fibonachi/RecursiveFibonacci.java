@@ -1,15 +1,20 @@
 package main.fibonachi;
 
-public class RecursiveFibonacci {
+import java.math.BigInteger;
 
-    public long getFibonacciNumber(int n) {
+public class RecursiveFibonacci {
+    public String getFibonacciNumber(int n) {
+        return calculateFibonacciNumber(n).toString();
+    }
+
+    public BigInteger calculateFibonacciNumber(int n) {
         if (n == 0) {
-            return 0;
+            return BigInteger.ZERO;
         }
         if (n == 1 || n == 2) {
-            return 1;
+            return BigInteger.ONE;
         }
-        return getFibonacciNumber(n - 1) + getFibonacciNumber(n - 2);
+        return calculateFibonacciNumber(n - 1).add(calculateFibonacciNumber(n - 2));
     }
 
 }
