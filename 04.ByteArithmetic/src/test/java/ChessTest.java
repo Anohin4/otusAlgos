@@ -26,7 +26,7 @@ public class ChessTest {
         System.out.println("----Bishop tests----");
         runTest("bishop", 10, bishop::getMoves);
         System.out.println("----Queen tests----");
-        runTest("queen", 10, queen                      ::getMoves);
+        runTest("queen", 10, queen::getMoves);
     }
 
 }
