@@ -30,13 +30,13 @@ public class PriorityQueue<T> implements MyQueue<T>{
     }
 
     @Override
-    public T pool() {
+    public T dequeue() {
         if(size == 0) {
             return null;
         }
         T result = arrayOfArrays.get(arrayOfArrays.size() - 1).get(0);
         arrayOfArrays.get(arrayOfArrays.size() - 1).remove(0);
-        //удаляем пустые массивы
+        //удаляем пустой последний массив
         if(arrayOfArrays.size() != 1
                 && arrayOfArrays.get(arrayOfArrays.size() - 1).size() == 0) {
             arrayOfArrays.remove(arrayOfArrays.size() - 1);
