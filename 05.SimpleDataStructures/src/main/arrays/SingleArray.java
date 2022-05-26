@@ -1,8 +1,9 @@
-package main;
+package main.arrays;
 
 import java.util.Arrays;
+import main.arrays.MyDataArray;
 
-public class SingleArray<T> implements MyDataStructure<T> {
+public class SingleArray<T> implements MyDataArray<T> {
     Object[] array;
 
     public SingleArray() {

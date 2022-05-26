@@ -1,10 +1,10 @@
-package main;
+package main.arrays;
 
 import static java.util.Objects.nonNull;
 
-public class MatrixArray<T> implements MyDataStructure<T> {
+public class MatrixArray<T> implements MyDataArray<T> {
 
-    private MyDataStructure<MyDataStructure<T>> arrayOfArrays;
+    private MyDataArray<MyDataArray<T>> arrayOfArrays;
     int currentSize;
     int factor;
 
@@ -40,7 +40,7 @@ public class MatrixArray<T> implements MyDataStructure<T> {
         }
 
         int numberOfArray = position /factor;
-        MyDataStructure<T> workingArray = arrayOfArrays.get(numberOfArray);
+        MyDataArray<T> workingArray = arrayOfArrays.get(numberOfArray);
         if(workingArray.size() != factor) {
             //если массив не полный - он последний, просто добавляем
             workingArray.add(item, position % factor);
@@ -70,7 +70,7 @@ public class MatrixArray<T> implements MyDataStructure<T> {
     @Override
     public T remove(int position) {
         int numberOfArray = position /factor;
-        MyDataStructure<T> workingArray = arrayOfArrays.get(numberOfArray);
+        MyDataArray<T> workingArray = arrayOfArrays.get(numberOfArray);
         T removedElement = workingArray.remove(position%factor);
         currentSize --;
         //дальнейшие действия актуальны только если данный массив не последний

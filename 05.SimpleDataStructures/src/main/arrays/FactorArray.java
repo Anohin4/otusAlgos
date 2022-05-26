@@ -1,28 +1,28 @@
-package main;
+package main.arrays;
 
 import java.util.Arrays;
 
-public class FactorArray<T> implements MyDataStructure<T> {
+public class FactorArray<T> implements MyDataArray<T> {
 
-    Object[] array;
-    int currentSize;
-    int factor;
+    private Object[] array;
+    private int currentSize;
+    private int factor;
 
     public FactorArray() {
         this.array = new Object[0];
         this.currentSize = 0;
-        this.factor = 8;
+        this.factor = 2;
     }
 
     public FactorArray(int factor) {
-        this.array = new Object[0];
+        this.array = new Object[factor];
         this.currentSize = 0;
         this.factor = factor;
     }
 
     @Override
     public int size() {
-        return array.length;
+        return currentSize;
     }
 
     @Override
@@ -36,6 +36,9 @@ public class FactorArray<T> implements MyDataStructure<T> {
 
     private void resize() {
         Object[] newArray = new Object[array.length * factor];
+        if(array.length == 0) {
+            newArray = new Object[1];
+        }
         System.arraycopy(array, 0, newArray, 0, size());
         this.array = newArray;
 
@@ -65,10 +68,18 @@ public class FactorArray<T> implements MyDataStructure<T> {
     @SuppressWarnings("unchecked cast")
     public T remove(int position) {
         T removedValue = (T) array[position];
-        for (int i = position; i < currentSize - 1; i++) {
-            array[i] = array[i + 1];
+
+        //Если массив можно уменьшить после удаления- уменьшаем. Если нет - просто сдвигаем элементы
+        if(currentSize - 1< array.length/factor && currentSize > 2) {
+            Object[] newArray = new Object[array.length/2];
+            System.arraycopy(array, 0, newArray,0, position);
+            System.arraycopy(array, position + 1, newArray, position, currentSize - position - 1);
+            this.array = newArray;
+        } else {
+            if (currentSize - 1 - position > 0)
+                System.arraycopy(array, position + 1, array, position, currentSize - 1 - position);
+            array[currentSize - 1] = null;
         }
-        array[currentSize - 1] = null;
         currentSize--;
         return removedValue;
     }
