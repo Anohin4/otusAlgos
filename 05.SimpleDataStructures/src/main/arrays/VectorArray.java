@@ -1,7 +1,6 @@
 package main.arrays;
 
 import java.util.Arrays;
-import main.arrays.MyDataArray;
 
 public class VectorArray<T> implements MyDataArray<T> {
 
@@ -28,7 +27,7 @@ public class VectorArray<T> implements MyDataArray<T> {
 
     @Override
     public void add(T item) {
-        if(currentSize == array.length) {
+        if (currentSize == array.length) {
             resize();
         }
         array[currentSize] = item;
@@ -41,9 +40,10 @@ public class VectorArray<T> implements MyDataArray<T> {
         this.array = newArray;
 
     }
+
     @Override
     public void add(T item, int position) {
-        if(currentSize == array.length) {
+        if (currentSize == array.length) {
             resize();
         }
         int needToCopy = array.length - position - 1;
@@ -65,10 +65,12 @@ public class VectorArray<T> implements MyDataArray<T> {
     @SuppressWarnings("unchecked cast")
     public T remove(int position) {
         T removedValue = (T) array[position];
-        for(int i = position; i<currentSize - 1; i++) {
+        for (int i = position; i < currentSize - 1; i++) {
             array[i] = array[i + 1];
         }
-        array[currentSize - 1] = null;
+        if(currentSize > 0) {
+            array[currentSize - 1] = null;
+        }
         currentSize--;
         return removedValue;
     }

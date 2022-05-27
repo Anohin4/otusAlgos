@@ -36,7 +36,7 @@ public class FactorArray<T> implements MyDataArray<T> {
 
     private void resize() {
         Object[] newArray = new Object[array.length * factor];
-        if(array.length == 0) {
+        if (array.length == 0) {
             newArray = new Object[1];
         }
         System.arraycopy(array, 0, newArray, 0, size());
@@ -70,14 +70,15 @@ public class FactorArray<T> implements MyDataArray<T> {
         T removedValue = (T) array[position];
 
         //Если массив можно уменьшить после удаления- уменьшаем. Если нет - просто сдвигаем элементы
-        if(currentSize - 1< array.length/factor && currentSize > 2) {
-            Object[] newArray = new Object[array.length/2];
-            System.arraycopy(array, 0, newArray,0, position);
+        if (currentSize - 1 < array.length / factor && currentSize > 2) {
+            Object[] newArray = new Object[array.length / 2];
+            System.arraycopy(array, 0, newArray, 0, position);
             System.arraycopy(array, position + 1, newArray, position, currentSize - position - 1);
             this.array = newArray;
         } else {
-            if (currentSize - 1 - position > 0)
+            if (currentSize - 1 - position > 0) {
                 System.arraycopy(array, position + 1, array, position, currentSize - 1 - position);
+            }
             array[currentSize - 1] = null;
         }
         currentSize--;

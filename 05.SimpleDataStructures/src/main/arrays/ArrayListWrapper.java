@@ -3,7 +3,8 @@ package main.arrays;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArrayListWrapper<T> implements MyDataArray<T>{
+public class ArrayListWrapper<T> implements MyDataArray<T> {
+
     private List<T> arrayList;
 
     public ArrayListWrapper() {

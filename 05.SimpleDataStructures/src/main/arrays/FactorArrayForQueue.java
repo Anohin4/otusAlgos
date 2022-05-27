@@ -1,6 +1,7 @@
 package main.arrays;
 
 public class FactorArrayForQueue<T> extends FactorArray<T> {
+
     int priority;
 
     public int getPriority() {

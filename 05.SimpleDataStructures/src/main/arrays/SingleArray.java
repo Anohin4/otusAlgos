@@ -1,9 +1,9 @@
 package main.arrays;
 
 import java.util.Arrays;
-import main.arrays.MyDataArray;
 
 public class SingleArray<T> implements MyDataArray<T> {
+
     Object[] array;
 
     public SingleArray() {
@@ -18,7 +18,7 @@ public class SingleArray<T> implements MyDataArray<T> {
     @Override
     public void add(T item) {
         Object[] newArray = new Object[array.length + 1];
-        for(int i = 0; i < array.length; i++) {
+        for (int i = 0; i < array.length; i++) {
             newArray[i] = array[i];
         }
         newArray[array.length] = item;
@@ -28,11 +28,12 @@ public class SingleArray<T> implements MyDataArray<T> {
     @Override
     public void add(T item, int position) {
         Object[] newArray = new Object[array.length + 1];
-        System.arraycopy(array, 0, newArray,0, position);
+        System.arraycopy(array, 0, newArray, 0, position);
         newArray[position] = item;
         System.arraycopy(array, position, newArray, position + 1, array.length - position);
         array = newArray;
     }
+
     private void resize() {
 
     }
@@ -47,7 +48,7 @@ public class SingleArray<T> implements MyDataArray<T> {
     @SuppressWarnings("unchecked cast")
     public T remove(int position) {
         Object[] newArray = new Object[array.length - 1];
-        System.arraycopy(array, 0, newArray,0, position);
+        System.arraycopy(array, 0, newArray, 0, position);
         System.arraycopy(array, position + 1, newArray, position, array.length - position - 1);
         T removedValue = (T) array[position];
         array = newArray;

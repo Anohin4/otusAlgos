@@ -1,7 +1,5 @@
 package main.arrays;
 
-import static java.util.Objects.nonNull;
-
 public class MatrixArray<T> implements MyDataArray<T> {
 
     private MyDataArray<MyDataArray<T>> arrayOfArrays;
@@ -35,19 +33,19 @@ public class MatrixArray<T> implements MyDataArray<T> {
 
     @Override
     public void add(T item, int position) {
-        if (currentSize == factor * arrayOfArrays.size() ) {
+        if (currentSize == factor * arrayOfArrays.size()) {
             arrayOfArrays.add(new VectorArray<>(factor));
         }
 
-        int numberOfArray = position /factor;
+        int numberOfArray = position / factor;
         MyDataArray<T> workingArray = arrayOfArrays.get(numberOfArray);
-        if(workingArray.size() != factor) {
+        if (workingArray.size() != factor) {
             //если массив не полный - он последний, просто добавляем
             workingArray.add(item, position % factor);
         } else {
             // если полный - в любом случае не последний
             //вставляем данные в первый массив.
-            T tempFromPreviousArray = workingArray.remove(workingArray.size()- 1);
+            T tempFromPreviousArray = workingArray.remove(workingArray.size() - 1);
             workingArray.add(item, position % factor);
             numberOfArray++;
 
@@ -69,12 +67,12 @@ public class MatrixArray<T> implements MyDataArray<T> {
 
     @Override
     public T remove(int position) {
-        int numberOfArray = position /factor;
+        int numberOfArray = position / factor;
         MyDataArray<T> workingArray = arrayOfArrays.get(numberOfArray);
-        T removedElement = workingArray.remove(position%factor);
-        currentSize --;
+        T removedElement = workingArray.remove(position % factor);
+        currentSize--;
         //дальнейшие действия актуальны только если данный массив не последний
-        if(numberOfArray < arrayOfArrays.size() - 1) {
+        if (numberOfArray < arrayOfArrays.size() - 1) {
             //добавляем на последнее место массива первый элемент следующего массива
             workingArray.add(arrayOfArrays.get(numberOfArray + 1).get(0));
             numberOfArray++;
@@ -90,7 +88,7 @@ public class MatrixArray<T> implements MyDataArray<T> {
 
         //проверка, что последний элемент не пустой
         //пустой - удаляем
-        if (!nonNull(arrayOfArrays.get(arrayOfArrays.size() - 1).get(0))) {
+        if (arrayOfArrays.get(arrayOfArrays.size() - 1).size() == 0) {
             arrayOfArrays.remove(arrayOfArrays.size() - 1);
         }
         return removedElement;
