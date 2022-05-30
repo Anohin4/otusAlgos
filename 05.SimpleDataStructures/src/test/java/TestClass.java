@@ -41,6 +41,8 @@ public class TestClass {
         runTest(MatrixArray.class, () -> matrixArray.remove(0));
         runTest(SpaceArray.class, () -> spaceArray.remove(0));
         runTest(ArrayListWrapper.class, () -> arrayListWrapper.remove(0));
+
+
         System.out.println("---------adding element to the beginning-------");
         runTest(SingleArray.class, () -> singleArray.add(0, 0));
         runTest(VectorArray.class, () -> vectorArray.add(0, 0));
@@ -48,6 +50,14 @@ public class TestClass {
         runTest(MatrixArray.class, () -> matrixArray.add(0, 0));
         runTest(SpaceArray.class, () -> spaceArray.add(0, 0));
         runTest(ArrayListWrapper.class, () -> arrayListWrapper.add(0, 0));
+
+        System.out.println("---------removing element from the end-------");
+        runTest(SingleArray.class, () -> singleArray.remove(singleArray.size() - 1));
+        runTest(VectorArray.class, () -> vectorArray.remove(vectorArray.size() - 1));
+        runTest(FactorArray.class, () -> factorArray.remove(factorArray.size() - 1));
+        runTest(MatrixArray.class, () -> matrixArray.remove(matrixArray.size() - 1));
+        runTest(SpaceArray.class, () -> spaceArray.remove(spaceArray.size() - 1));
+        runTest(ArrayListWrapper.class, () -> arrayListWrapper.remove(arrayListWrapper.size() - 1));
 
 
     }
