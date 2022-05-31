@@ -1,5 +1,8 @@
-public class BinaryInsertionSort {
+package main;
 
+public class InsertionSort implements SortingAlg{
+
+    @Override
     public void sort(int[] array) {
         int lastSortedIndex = 0;
         int i = array.length - 1;
@@ -14,21 +17,11 @@ public class BinaryInsertionSort {
     }
 
     public int findPosition(int[] array, int valueToInsert, int lastSortedIndex) {
-        int high = lastSortedIndex;
-        int low = 0;
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-            int midValue = array[mid];
-            if(midValue > valueToInsert) {
-                high = mid - 1;
-            } else if (midValue < valueToInsert) {
-                low = mid + 1;
-            } else {
-                return mid;
+        for (int i = lastSortedIndex; i >= 0; i--) {
+            if(array[i] < valueToInsert) {
+                return i + 1;
             }
-
         }
-        return high + 1;
+        return 0;
     }
-
 }

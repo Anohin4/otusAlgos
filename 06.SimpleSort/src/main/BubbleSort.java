@@ -1,5 +1,8 @@
-public class BubbleSort {
+package main;
 
+public class BubbleSort implements SortingAlg{
+
+    @Override
     public void sort(int[] array) {
         for (int i = 0; i < array.length; i++) {
             boolean swapped = false;

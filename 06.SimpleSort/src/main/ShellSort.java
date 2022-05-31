@@ -1,5 +1,8 @@
-public class ShellSort {
+package main;
 
+public class ShellSort implements SortingAlg{
+
+    @Override
     public void sort(int[] array) {
         int gap = array.length / 2;
         for(; gap > 0; gap /= 2) {
