@@ -8,7 +8,8 @@ public class HeapSort implements SortingAlg {
         for (int root = array.length / 2 - 1; root >= 0; root--) {
             heapify(array, root, array.length);
         }
-        //в корне всегда наибольший элементю меняем его с последним не сортированным и возвращаем структуру
+        //в корне всегда наибольший элемент, меняем его с последним не сортированным и восстанавливаем структуру
+        //каждую итерацию исключаем последний элемент из дерева
         for (int j = array.length - 1; j > 0; j--) {
             swap(array,0, j);
             heapify(array,0, j);
