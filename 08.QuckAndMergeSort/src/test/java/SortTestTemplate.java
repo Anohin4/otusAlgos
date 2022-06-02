@@ -18,7 +18,7 @@ public class SortTestTemplate {
         System.out.println("------DIGITS TEST-----");
         runTest("digits", numberOfTests, alg);
         System.out.println("------REVERS TEST-----");
-        //runTest("revers", numberOfTests, alg);
+        runTest("revers", numberOfTests, alg);
         System.out.println("------SORTED TEST-----");
         runTest("sorted", numberOfTests, alg);
     }
