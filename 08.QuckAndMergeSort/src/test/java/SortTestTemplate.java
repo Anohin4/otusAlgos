@@ -12,13 +12,13 @@ public class SortTestTemplate {
 
     public static void runTest(SortingAlg alg)
             throws IOException {
-        int numberOfTests = 6;
+        int numberOfTests = 8;
         System.out.println("------RANDOM TEST-----");
         runTest("random", numberOfTests, alg);
         System.out.println("------DIGITS TEST-----");
         runTest("digits", numberOfTests, alg);
         System.out.println("------REVERS TEST-----");
-        runTest("revers", numberOfTests, alg);
+        //runTest("revers", numberOfTests, alg);
         System.out.println("------SORTED TEST-----");
         runTest("sorted", numberOfTests, alg);
     }
@@ -39,7 +39,7 @@ public class SortTestTemplate {
     private static void checkAnswer(int[] task, int[] answer, long timeOfComplete, int numberOfTest) {
         int compare = Arrays.compare(task, answer);
         if (compare == 0) {
-            System.out.println("Test " + numberOfTest + " completed successfully. Time of complete "
+            System.out.println("Test with 10^" + numberOfTest + " elements completed successfully. Time of complete "
                     + timeOfComplete + " ms");
         } else {
             System.out.println("Test " + numberOfTest + " failed. Time of complete "
@@ -47,7 +47,7 @@ public class SortTestTemplate {
         }
     }
 
-    private static int[] getTask(String catalogName, int numberOfTest) throws IOException {
+    public static int[] getTask(String catalogName, int numberOfTest) throws IOException {
         String rootPath = System.getProperty("user.dir") + "/06.SimpleSort/src/test/resources/" + catalogName + "/test." + numberOfTest
                 + ".in";
         Scanner scanner = new Scanner(new File(rootPath));
