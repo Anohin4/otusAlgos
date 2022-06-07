@@ -30,7 +30,6 @@ public class ExternalSort {
         try (DataInputStream inputStream = new DataInputStream(new FileInputStream(inputFile));
                 DataOutputStream tempFileStream1 = new DataOutputStream(new FileOutputStream(tempOneFile));
                 DataOutputStream tempFileStream2 = new DataOutputStream(new FileOutputStream(tempTwoFile))) {
-            System.out.println("size " + inputStream.available());
             DataOutputStream currentStream = tempFileStream1;
             //записываем первое значение в первый файл
             short previousValue = inputStream.readShort();
@@ -65,13 +64,8 @@ public class ExternalSort {
         try (DataOutputStream outputStream = new DataOutputStream(new FileOutputStream(inputFile));
                 DataInputStream tempFileStream1 = new DataInputStream(new FileInputStream(tempOneFile));
                 DataInputStream tempFileStream2 = new DataInputStream(new FileInputStream(tempTwoFile))) {
-            System.out.println("temp 1 " +tempFileStream1.available());
-            System.out.println("temp 2 " +tempFileStream2.available());
 
             DataInputStream currentInputStream = tempFileStream1;
-
-
-
             short previousValue = currentInputStream.readShort();
             outputStream.writeShort(previousValue);
 
@@ -88,6 +82,7 @@ public class ExternalSort {
                 outputStream.writeShort(currentValue);
                 previousValue = currentValue;
             }
+            outputStream.writeShort(lastFromOtherFile);
 
             //закончились данные из одного файла - добавляем из второго
             currentInputStream = changeStream(currentInputStream,tempFileStream1,tempFileStream2);
