@@ -1,5 +1,6 @@
 package main;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,9 +13,9 @@ public class FileGenerating {
         File file = new File("input.txt");
 
 
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            for(int i = 0; i <= 65535; i++) {
-                fos.write((short) new Random().nextInt(Short.MAX_VALUE));
+        try (DataOutputStream fos = new DataOutputStream(new FileOutputStream(file))) {
+            for(int i = 0; i <= 655; i++) {
+                fos.writeShort(new Random().nextInt(Short.MAX_VALUE));
             }
 
             System.out.println("Successfully written data to the file");
