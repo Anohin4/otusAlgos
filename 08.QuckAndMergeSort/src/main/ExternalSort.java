@@ -65,14 +65,26 @@ public class ExternalSort {
                 DataInputStream tempFileStream1 = new DataInputStream(new FileInputStream(tempOneFile));
                 DataInputStream tempFileStream2 = new DataInputStream(new FileInputStream(tempTwoFile))) {
 
-            DataInputStream currentInputStream = tempFileStream1;
-            short previousValue = currentInputStream.readShort();
-            outputStream.writeShort(previousValue);
+            DataInputStream currentInputStream;
 
+            short currentValue = tempFileStream1.readShort();
             short lastFromOtherFile = tempFileStream2.readShort();
+
+            if (currentValue > lastFromOtherFile) {
+                short temp = currentValue;
+                currentValue = lastFromOtherFile;
+                lastFromOtherFile = temp;
+                currentInputStream = tempFileStream2;
+            } else {
+                currentInputStream = tempFileStream1;
+            }
+            short lastSavedValue = currentValue;
             while (currentInputStream.available() > 0) {
-                short currentValue = currentInputStream.readShort();
-                if (currentValue < previousValue && currentValue < lastFromOtherFile) {
+                currentValue = currentInputStream.readShort();
+                if (((lastFromOtherFile > lastSavedValue && lastSavedValue  > currentValue) ||
+                        (lastFromOtherFile < currentValue && currentValue < lastSavedValue)
+                        || (lastFromOtherFile >lastSavedValue && lastFromOtherFile < currentValue))
+                ) {
                     //если начинаем серию заново и значение из текущего массива больше значения прошлого - меняем их и поток
                     short temp = currentValue;
                     currentValue = lastFromOtherFile;
@@ -80,7 +92,7 @@ public class ExternalSort {
                     currentInputStream = changeStream(currentInputStream, tempFileStream1, tempFileStream2);
                 }
                 outputStream.writeShort(currentValue);
-                previousValue = currentValue;
+                lastSavedValue = currentValue;
             }
             outputStream.writeShort(lastFromOtherFile);
 

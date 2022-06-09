@@ -8,7 +8,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import main.ExternalSort;
+import main.ExternalSort2;
 import main.FileGenerating;
+import main.FileGenerating2;
 import main.MergeSort;
 import main.QuickSort;
 

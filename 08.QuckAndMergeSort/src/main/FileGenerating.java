@@ -14,8 +14,8 @@ public class FileGenerating {
 
 
         try (DataOutputStream fos = new DataOutputStream(new FileOutputStream(file))) {
-            for(int i = 0; i <= 65; i++) {
-                fos.writeShort(new Random().nextInt(Short.MAX_VALUE));
+            for(int i = 0; i <= 655; i++) {
+                fos.writeShort((int) (Math.random()* Short.MAX_VALUE));
             }
 
             System.out.println("Successfully written data to the file");
