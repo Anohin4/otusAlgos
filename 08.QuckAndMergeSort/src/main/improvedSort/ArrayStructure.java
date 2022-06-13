@@ -27,7 +27,7 @@ public class ArrayStructure {
     }
 
     private short[] readShortArray() throws IOException {
-        int size = arraySize/2;
+        int size = arraySize / 2;
         byte[] byteArray =
                 currentStream.available() >= size ? currentStream.readNBytes(size) : currentStream.readAllBytes();
         short[] shortArray = new short[byteArray.length / 2];
@@ -60,12 +60,12 @@ public class ArrayStructure {
     }
 
     private void updateShortArray() throws IOException {
+        numberOfRun++;
         if (numberOfRun == currentDivider) {
             isFinished = true;
-        } else {
-            currentArray = readShortArray();
-            numberOfRun++;
+            return;
         }
+        currentArray = readShortArray();
     }
 
     public short getCurrentShortValue() {

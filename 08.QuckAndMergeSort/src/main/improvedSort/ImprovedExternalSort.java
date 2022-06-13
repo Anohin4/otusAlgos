@@ -79,8 +79,6 @@ public class ImprovedExternalSort extends ExternalSort {
             DataInputStream notFinishedStream = inputStreamA.available() > 0 ? inputStreamA : inputStreamB;
             currentOutput.write(notFinishedStream.readAllBytes());
         }
-        System.out.println(files[2].getName() + " size " + files[2].length());
-        System.out.println(files[3].getName() + " size " + files[3].length());
     }
 
     private short getMinShortAndUpdateStructureValue(ArrayStructure structureA, ArrayStructure structureB)
