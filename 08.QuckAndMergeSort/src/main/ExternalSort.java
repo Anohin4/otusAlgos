@@ -9,8 +9,8 @@ import java.io.IOException;
 
 public class ExternalSort {
 
-    private File tempOneFile = new File("temp1.txt");
-    private File tempTwoFile = new File("temp2.txt");
+    protected final File tempOneFile = new File("temp1.txt");
+    protected final File tempTwoFile = new File("temp2.txt");
 
     public void sortFromFile(String fileName) throws IOException {
         File file = new File(fileName);
@@ -21,12 +21,12 @@ public class ExternalSort {
             }
             mergeTempFiles(file);
         }
+        deleteTempFiles();
     }
 
-    private void externalSort(File inputFile) throws IOException {
+    protected void externalSort(File inputFile) throws IOException {
         //удвляем старые файлы
-        tempOneFile.delete();
-        tempTwoFile.delete();
+        deleteTempFiles();
         try (DataInputStream inputStream = new DataInputStream(new FileInputStream(inputFile));
                 DataOutputStream tempFileStream1 = new DataOutputStream(new FileOutputStream(tempOneFile));
                 DataOutputStream tempFileStream2 = new DataOutputStream(new FileOutputStream(tempTwoFile))) {
@@ -46,11 +46,16 @@ public class ExternalSort {
         }
     }
 
-    private boolean isSorted() {
+    protected void deleteTempFiles() {
+        tempOneFile.delete();
+        tempTwoFile.delete();
+    }
+
+    protected boolean isSorted() {
         return tempTwoFile.length() == 0;
     }
 
-    private <T> T changeStream(T currentStream, T tempFileStream1,
+    protected <T> T changeStream(T currentStream, T tempFileStream1,
             T tempFileStream2) {
         if (currentStream == tempFileStream1) {
             return tempFileStream2;
@@ -59,33 +64,23 @@ public class ExternalSort {
         }
     }
 
-    private void mergeTempFiles(File inputFile) throws IOException {
+    protected void mergeTempFiles(File inputFile) throws IOException {
         inputFile.delete();
         try (DataOutputStream outputStream = new DataOutputStream(new FileOutputStream(inputFile));
                 DataInputStream tempFileStream1 = new DataInputStream(new FileInputStream(tempOneFile));
                 DataInputStream tempFileStream2 = new DataInputStream(new FileInputStream(tempTwoFile))) {
-
-            DataInputStream currentInputStream;
-
-            short currentValue = tempFileStream1.readShort();
+            //берем еачальные значения
+            DataInputStream currentInputStream = tempFileStream1;
             short lastFromOtherFile = tempFileStream2.readShort();
+            short lastSavedValue = Short.MIN_VALUE;
 
-            if (currentValue > lastFromOtherFile) {
-                short temp = currentValue;
-                currentValue = lastFromOtherFile;
-                lastFromOtherFile = temp;
-                currentInputStream = tempFileStream2;
-            } else {
-                currentInputStream = tempFileStream1;
-            }
-            short lastSavedValue = currentValue;
             while (currentInputStream.available() > 0) {
-                currentValue = currentInputStream.readShort();
-                if (((lastFromOtherFile > lastSavedValue && lastSavedValue  > currentValue) ||
-                        (lastFromOtherFile < currentValue && currentValue < lastSavedValue)
-                        || (lastFromOtherFile >lastSavedValue && lastFromOtherFile < currentValue))
+                short currentValue = currentInputStream.readShort();
+                //условия когда используем значения из другого файла, не из того, который только что читали
+                if (((lastFromOtherFile > lastSavedValue && lastSavedValue > currentValue) ||
+                        (lastFromOtherFile < currentValue && currentValue < lastSavedValue) ||
+                        (lastFromOtherFile > lastSavedValue && lastFromOtherFile < currentValue))
                 ) {
-                    //если начинаем серию заново и значение из текущего массива больше значения прошлого - меняем их и поток
                     short temp = currentValue;
                     currentValue = lastFromOtherFile;
                     lastFromOtherFile = temp;
@@ -97,7 +92,7 @@ public class ExternalSort {
             outputStream.writeShort(lastFromOtherFile);
 
             //закончились данные из одного файла - добавляем из второго
-            currentInputStream = changeStream(currentInputStream,tempFileStream1,tempFileStream2);
+            currentInputStream = changeStream(currentInputStream, tempFileStream1, tempFileStream2);
             while (currentInputStream.available() > 0) {
                 outputStream.writeShort(currentInputStream.readShort());
             }

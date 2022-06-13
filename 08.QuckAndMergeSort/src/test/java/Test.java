@@ -1,25 +1,20 @@
 package test.java;
 
-import static test.java.SortTestTemplate.getTask;
+import static main.FileGenerating.generateFileWithRandomShorts;
 import static test.java.SortTestTemplate.runTest;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import main.ExternalSort;
-import main.ExternalSort2;
-import main.FileGenerating;
-import main.FileGenerating2;
-import main.MergeSort;
-import main.QuickSort;
+import main.improvedSort.ImprovedExternalSort;
 
 public class Test {
 
     public static void main(String[] args) throws IOException {
-        new FileGenerating().generateFileWithRandomShorts();
-        new ExternalSort().sortFromFile("input.txt");
-        try(DataInputStream inputStream = new DataInputStream(new FileInputStream("input.txt"))) {
+        String filename = "input.txt";
+        generateFileWithRandomShorts(1000, filename);
+        new ImprovedExternalSort().sortFromFile(filename, 100);
+        try(DataInputStream inputStream = new DataInputStream(new FileInputStream(filename))) {
             while (inputStream.available() > 0) {
                 System.out.println(inputStream.readShort());
             }

@@ -9,18 +9,12 @@ import java.util.Random;
 
 public class FileGenerating {
 
-    public void generateFileWithRandomShorts() {
-        File file = new File("input.txt");
-
-
+    public static void generateFileWithRandomShorts(int amountOfNumbers, String fileName) throws IOException {
+        File file = new File(fileName);
         try (DataOutputStream fos = new DataOutputStream(new FileOutputStream(file))) {
-            for(int i = 0; i <= 655; i++) {
-                fos.writeShort((int) (Math.random()* Short.MAX_VALUE));
+            for(int i = 0; i <= amountOfNumbers; i++) {
+                fos.writeShort((short) (Math.random()* Short.MAX_VALUE));
             }
-
-            System.out.println("Successfully written data to the file");
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
