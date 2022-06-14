@@ -1,20 +1,24 @@
-package main.improvedSort;
+package main.improvedExternalSort;
+
+import static main.improvedExternalSort.Utils.readShortArray;
+import static main.improvedExternalSort.Utils.writeShortArray;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 import main.ExternalSort;
 import main.MergeSort;
 
-public class ImprovedExternalSort extends ExternalSort {
+//Как это работает
+// Первый проход - вычитываем массивы указанной длинны в память, сортируем, и попеременно их записываем в разные файлы
+// Далее читаем  отсортированные массивы из каждого файла и записываем в новые файлы сортируя в нужном порядкке
+//итог - сначала будет длина файла 2*длинна массива, потом 4 и тд
+//Когда все уложится в один файл - сортировка завершается
+
+public class ImprovedExternalSort implements ExternalSort {
 
     private final File tempOneFile = new File("temp1.txt");
     private final File tempTwoFile = new File("temp2.txt");
@@ -40,10 +44,6 @@ public class ImprovedExternalSort extends ExternalSort {
         files[0].renameTo(new File(name));
         //записываем данные из отсортированного файла в начальный файл
         deleteTempFiles();
-    }
-
-    private File[] changeTempFiles(File[] files) {
-        return new File[]{files[2], files[3], files[0], files[1]};
     }
 
     private void externalSort(int currentDivider, File[] files, int arrayMaxSize) throws IOException {
@@ -106,23 +106,6 @@ public class ImprovedExternalSort extends ExternalSort {
         }
     }
 
-    private short[] readShortArray(DataInputStream inputStream, int size) throws IOException {
-        byte[] byteArray =
-                inputStream.available() >= size ? inputStream.readNBytes(size) : inputStream.readAllBytes();
-        short[] shortArray = new short[byteArray.length / 2];
-        ByteBuffer.wrap(byteArray).order(ByteOrder.BIG_ENDIAN).asShortBuffer().get(shortArray);
-        return shortArray;
-    }
-
-    private void writeShortArray(DataOutputStream outputStream, short[] array) throws IOException {
-        ByteBuffer myByteBuffer = ByteBuffer.allocate(array.length * 2);
-        myByteBuffer.order(ByteOrder.BIG_ENDIAN);
-
-        ShortBuffer myShortBuffer = myByteBuffer.asShortBuffer();
-        myShortBuffer.put(array);
-
-        outputStream.write(myByteBuffer.array());
-    }
 
     private boolean isSorted(File[] tempFiles) {
         if (tempFiles[1].length() == 0) {
@@ -130,5 +113,78 @@ public class ImprovedExternalSort extends ExternalSort {
         }
         return false;
     }
+    private File[] changeTempFiles(File[] files) {
+        return new File[]{files[2], files[3], files[0], files[1]};
+    }
+    protected void deleteTempFiles() {
+        tempOneFile.delete();
+        tempTwoFile.delete();
+        tempThreeFile.delete();
+        tempFourFile.delete();
+    }
+    public class ArrayStructure {
+        private short[] currentArray;
+        private DataInputStream currentStream;
+        private int currentArrayIndex;
+        private final int arraySize;
+        private final int currentDivider;
+        private int numberOfRun;
+        private short currentShortValue;
+        boolean isFinished;
 
+        public ArrayStructure(DataInputStream currentStream,
+                int currentDivider, int arraySize) throws IOException {
+            this.currentStream = currentStream;
+            this.currentArrayIndex = 0;
+            this.arraySize = arraySize/2;
+            this.currentDivider = currentDivider;
+            this.currentArray = readShortArray(currentStream, this.arraySize);
+            this.currentShortValue = this.currentArray[0];
+            this.isFinished = false;
+        }
+
+        public short getAndUpdate() throws IOException {
+            short tempResult = getCurrentShortValue();
+            setNextShortValue();
+            return tempResult;
+        }
+
+        private void setNextShortValue() throws IOException {
+            if (isFinished) {
+                return;
+            }
+            currentArrayIndex++;
+
+            if(currentArrayIndex >= currentArray.length) {
+                currentArrayIndex = 0;
+                updateShortArray();
+            }
+
+            //Если обновленный массив равен нулю - дошли до конца
+            if (currentArray.length == 0) {
+                isFinished = true;
+                return;
+            }
+            currentShortValue = currentArray[currentArrayIndex];
+        }
+
+        private void updateShortArray() throws IOException {
+            numberOfRun++;
+            if (numberOfRun == currentDivider) {
+                isFinished = true;
+                return;
+            }
+            currentArray = readShortArray(currentStream, arraySize);
+        }
+
+        public short getCurrentShortValue() {
+            return currentShortValue;
+        }
+
+        public boolean isFinished() {
+            return isFinished;
+        }
+
+    }
 }
+

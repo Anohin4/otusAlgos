@@ -6,25 +6,18 @@ import static test.java.SortTestTemplate.runTest;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import main.improvedSort.ImprovedExternalSort;
+import main.MergeSort;
+import main.QuickSort;
+import main.improvedExternalSort.ImprovedExternalSort;
 
 public class Test {
 
     public static void main(String[] args) throws IOException {
-        String filename = "input.txt";
-        generateFileWithRandomShorts(1000, filename);
-        new ImprovedExternalSort().sortFromFile(filename, 100);
-        try(DataInputStream inputStream = new DataInputStream(new FileInputStream(filename))) {
-            while (inputStream.available() > 0) {
-                System.out.println(inputStream.readShort());
-            }
-        }
 
-//        System.out.println(">>>HEAP SORT<<<");
-//        runTest(new MergeSort());
-//        int[] array = getTask("revers", 4);
-//        new QuickSort().sort(array);
-//        System.out.println(Arrays.toString(array));
+        System.out.println(">>>Merge SORT<<<");
+        runTest(new MergeSort());
+        System.out.println(">>>Quick SORT<<<");
+        runTest(new QuickSort());
     }
 
 }
