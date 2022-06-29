@@ -8,7 +8,7 @@ import main.radix.RadixSort;
 public class Test {
 
     public static void main(String[] args) {
-        int[] q = {4,2,1,5,7,9, 8, 6, 8};
+        int[] q = {4,32,1,5,7,9, 8, 6, 88};
         new RadixSort().sort(q);
         System.out.println(Arrays.toString(q));
     }

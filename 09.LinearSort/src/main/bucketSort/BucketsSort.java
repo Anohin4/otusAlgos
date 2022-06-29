@@ -14,7 +14,7 @@ public class BucketsSort implements SortingAlg {
         bucketStorage = new Bucket[array.length];
         int max = findMaxValue(array);
         for (int j : array) {
-            int bucketIndex = (j * array.length) / (max + 1);
+            int bucketIndex = (int) (((long)j * (long) array.length) / ((long)(max + 1)));
             addToBucket(bucketIndex, j);
         }
 
