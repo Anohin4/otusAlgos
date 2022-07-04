@@ -1,50 +1,45 @@
 package main.bucketSort;
 
-import static java.util.Objects.nonNull;
-
 public class Bucket {
 
-    private int storage;
+    private int[] storage = new int[8];
+    private int size;
 
-    private Bucket nextBucket;
-
-    public Bucket(int storage) {
-        this.storage = storage;
-    }
-
-    public int getStorageValue() {
+    public int[] getStorage() {
         return storage;
     }
 
-    public Bucket getNextBucket() {
-        return nextBucket;
+    public int getSize() {
+        return size;
     }
 
-    public int getStorageValueAndIterate() {
-        int temp  = getStorageValue();
-        //если есть следующее ведро - менем значение текущего на него
-        if(nonNull(nextBucket)) {
-            this.storage = nextBucket.getStorageValue();
-            this.nextBucket = nextBucket.getNextBucket();
+    public Bucket(int i) {
+        storage[0] = i;
+        size = 1;
+    }
+
+    public void addToBucket(int intToAdd) {
+        int insertIndex = 0;
+        //находим индекс вставки
+        for (; insertIndex < size; insertIndex++) {
+            if(storage[insertIndex] >= intToAdd)
+                break;
         }
-        return temp;
+
+        System.arraycopy(storage, insertIndex,
+                storage, insertIndex + 1, size - insertIndex);
+        storage[insertIndex] = intToAdd;
+        size++;
+        resize();
     }
 
-    public void setNextBucket(Bucket nextBucket) {
-        this.nextBucket = nextBucket;
-    }
-
-    public Bucket addBucket(Bucket bucketToAdd) {
-        //рекурсивно заполняем ведра по цепочке, попутно сравнивая
-        if (bucketToAdd.getStorageValue() < getStorageValue()) {
-            bucketToAdd.setNextBucket(this);
-            return bucketToAdd;
-        } else if (!nonNull(nextBucket)){
-            setNextBucket(bucketToAdd);
-            return this;
-        } else {
-            setNextBucket(getNextBucket().addBucket(bucketToAdd));
-            return this;
+    public int getFirst() {return storage[0];};
+    private void resize() {
+        if(storage.length == size) {
+            int[] newArray = new int[storage.length*2];
+            System.arraycopy(storage, 0,
+                    newArray, 0, storage.length);
+            storage = newArray;
         }
     }
 }

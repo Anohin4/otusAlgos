@@ -1,5 +1,6 @@
 package main.bucketSort;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import main.SortingAlg;
@@ -14,33 +15,33 @@ public class BucketsSort implements SortingAlg {
         bucketStorage = new Bucket[array.length];
         int max = findMaxValue(array);
         for (int j : array) {
-            int bucketIndex = (int) (((long)j * (long) array.length) / ((long)(max + 1)));
+            int bucketIndex = (int) (((long) j * (long) array.length) / ((long) (max + 1)));
             addToBucket(bucketIndex, j);
         }
 
+        //вынимаем и добавляем в итоговый массив
         int i = 0;
         for (Bucket bucket : bucketStorage) {
-            if (!nonNull(bucket)) {
+            if (isNull(bucket)) {
                 continue;
             }
-            //если цепочка ведер -  добавляем значения и итерируем по цепочке
-            while (nonNull(bucket.getNextBucket())) {
-                array[i++] = bucket.getStorageValueAndIterate();
-            };
-            //добавляем последнее значение
-            array[i++] = bucket.getStorageValue();
+            if (bucket.getSize() == 1) {
+                array[i++] = bucket.getFirst();
+            } else {
+                int[] storage = bucket.getStorage();
+                int size = bucket.getSize();
+                System.arraycopy(storage, 0, array, i, size);
+                i += size;
+            }
         }
     }
 
-
-
     private void addToBucket(int bucketIndex, int value) {
-        Bucket newBucket = new Bucket(value);
         Bucket bucket = bucketStorage[bucketIndex];
-        if(nonNull(bucket)) {
-            bucketStorage[bucketIndex] = bucket.addBucket(newBucket);
+        if (nonNull(bucket)) {
+            bucket.addToBucket(value);
         } else {
-            bucketStorage[bucketIndex] = newBucket;
+            bucketStorage[bucketIndex] = new Bucket(value);
         }
     }
 }

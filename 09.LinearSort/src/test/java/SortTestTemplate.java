@@ -1,6 +1,10 @@
 package test.java;
 
+import static main.FileGenerating.generateFileWithRandomInt;
+
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
@@ -22,6 +26,24 @@ public class SortTestTemplate {
         System.out.println("------SORTED TEST-----");
         runTest("sorted", numberOfTests, alg);
     }
+
+    public static void fileTesting(SortingAlg alg) throws IOException {
+        int amountOfIntegers = 1_00_000_000;
+        generateFileWithRandomInt(amountOfIntegers, "test.txt");
+        int[] array = new int[amountOfIntegers];
+        try(DataInputStream inputStream = new DataInputStream(new FileInputStream(new File("test.txt")))) {
+            for (int i = 0; i< amountOfIntegers; i++) {
+                array[i]=inputStream.readInt();
+            }
+        }
+        long startTime = System.currentTimeMillis();
+        alg.sort(array);
+        long timeOfComplete = System.currentTimeMillis() - startTime;
+        System.out.println(Arrays.toString(array));
+        System.out.println("time of completion " + timeOfComplete);
+
+    }
+
     public static void runTest(String catalogName, int amountOfTests, SortingAlg alg)
             throws IOException {
         for (int i = 0; i < amountOfTests; i++) {
@@ -48,22 +70,25 @@ public class SortTestTemplate {
     }
 
     public static int[] getTask(String catalogName, int numberOfTest) throws IOException {
-        String rootPath = System.getProperty("user.dir") + "/06.SimpleSort/src/test/resources/" + catalogName + "/test." + numberOfTest
+        String rootPath = System.getProperty("user.dir") + "/06.SimpleSort/src/test/resources/" + catalogName + "/test."
+                + numberOfTest
                 + ".in";
         Scanner scanner = new Scanner(new File(rootPath));
-        int [] array = new int [scanner.nextInt()];
+        int[] array = new int[scanner.nextInt()];
         int i = 0;
-        while(scanner.hasNextInt()){
+        while (scanner.hasNextInt()) {
             array[i++] = scanner.nextInt();
         }
         return array;
     }
+
     private static int[] getAnswer(int length, String catalogName, int numberOfTest) throws FileNotFoundException {
-        String rootPath = System.getProperty("user.dir") + "/06.SimpleSort/src/test/resources/" + catalogName + "/test." + numberOfTest + ".out";
+        String rootPath = System.getProperty("user.dir") + "/06.SimpleSort/src/test/resources/" + catalogName + "/test."
+                + numberOfTest + ".out";
         Scanner scanner = new Scanner(new File(rootPath));
-        int [] array = new int [length];
+        int[] array = new int[length];
         int i = 0;
-        while(scanner.hasNextInt()){
+        while (scanner.hasNextInt()) {
             array[i++] = scanner.nextInt();
         }
         return array;
