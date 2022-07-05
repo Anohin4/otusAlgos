@@ -76,31 +76,9 @@ public class Node {
             amount++;
         }
     }
-
-
-    public void delete(int i) {
-        Node node = findNode(i);
-        if(isNull(node)) {
-            return;
-        }
-        if(isNull(node.getRightChild()) && isNull(node.getLeftChild())) {
-            node = null;
-            return;
-        }
-        //случай, где оба сына
-        if(nonNull(node.getRightChild()) && nonNull(node.getLeftChild())) {
-
-        }
-        //случай, где только один сын
-        if(isNull(node.getLeftChild()) || isNull(node.getRightChild())) {
-
-        }
-    }
-    public void copyParams(Node node) {
+    public void copyValues(Node node) {
         setAmount(node.getAmount());
         setHeight(node.getHeight());
-        setLeftChild(node.getLeftChild());
-        setRightChild(node.getRightChild());
         setStorageValue(node.getStorageValue());
     }
 
