@@ -3,23 +3,23 @@ import java.util.Arrays;
 public class Test {
 
     public static void main(String[] args) {
-        BinaryTree binaryTree = new BinaryTree(10);
-        binaryTree.insert(1);
-        binaryTree.insert(14);
-        binaryTree.insert(13);
-        binaryTree.insert(12);
-        binaryTree.insert(11);
-        System.out.println(Arrays.toString(binaryTree.returnSortedArray()));
-        binaryTree.delete(1);
-        System.out.println(Arrays.toString(binaryTree.returnSortedArray()));
-        binaryTree.delete(10);
-        System.out.println(Arrays.toString(binaryTree.returnSortedArray()));
-//        binaryTree.insert(21);
-//        binaryTree.insert(9);
-//        binaryTree.insert(3);
-//        binaryTree.insert(43);
-//        binaryTree.insert(4);
-//        binaryTree.insert(31);
+        long start = System.currentTimeMillis();
+        AvlTree binaryTree = new AvlTree(10);
+        for (int i = 0; i < 2000000; i++) {
+            binaryTree.insert((int) (Math.random()*65000));
+        }
+        long endTime = (System.currentTimeMillis() - start);
+        System.out.println("time with random ints " + endTime + "ms");
+
+        start = System.currentTimeMillis();
+        AvlTree binaryTree2 = new AvlTree(0);
+        for (int i = 1; i < 2000000; i++) {
+            binaryTree2.insert(i);
+        }
+        endTime = (System.currentTimeMillis() - start);
+        System.out.println("time with particular ints " + endTime + "ms");
+        System.out.println(Arrays.toString(binaryTree2.returnSortedArray()));
+
 
 
 

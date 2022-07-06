@@ -1,16 +1,14 @@
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-/*
-Простое дерево, без оптимизаций
- */
-public class BinaryTree {
+
+public class AvlTree {
 
     private Node rootNode;
     private int size;
     private int counterForSorting;
 
-    public BinaryTree(int firstValue) {
-        this.rootNode = new Node(firstValue);
+    public AvlTree(int value) {
+        this.rootNode = new Node(value);
         this.size = 1;
     }
 
@@ -18,67 +16,12 @@ public class BinaryTree {
         addNode(rootNode, value);
         size++;
     }
-    private void addNode(Node node, int value) {
-        if (value > node.getStorageValue()) {
-            if(isNull(node.getRightChild())) {
-                node.setRightChild(new Node(value));
-            } else {
-                addNode(node.getRightChild(), value);
-            }
-        } else if(value < node.getStorageValue()) {
-            if(isNull(node.getLeftChild())) {
-                node.setLeftChild(new Node(value));
-            } else {
-                addNode(node.getLeftChild(), value);
-            }
-        } else {
-            node.addAmount();
-        }
-    }
-    public boolean searchByValue(int i) {
-        Node node = findNode(rootNode, i);
-        if (isNull(node)) {
-            return false;
-        }
-        return true;
-    }
 
     public int[] returnSortedArray() {
         int[] newArray = new int[size];
         counterForSorting = 0;
         goThroughTree(newArray, rootNode);
         return newArray;
-    }
-
-    private void goThroughTree(int[] newArray, Node node) {
-        if (isNull(node.getLeftChild())) {
-            for (int i = node.getAmount(); i > 0; i--) {
-                newArray[counterForSorting] = node.getStorageValue();
-                counterForSorting++;
-            }
-        }
-        if (nonNull(node.getLeftChild())) {
-            goThroughTree(newArray, node.getLeftChild());
-            for (int i = node.getAmount(); i > 0; i--) {
-                newArray[counterForSorting] = node.getStorageValue();
-                counterForSorting++;
-            }
-        }
-        if (nonNull(node.getRightChild())) {
-            goThroughTree(newArray, node.getRightChild());
-        }
-    }
-
-    private Node findNode(Node nodeToStartSearch, int valueToFind) {
-        if (valueToFind == nodeToStartSearch.getStorageValue()) {
-            return nodeToStartSearch;
-        }
-        if (valueToFind > nodeToStartSearch.getStorageValue()) {
-            return nonNull(nodeToStartSearch.getRightChild()) ? findNode(nodeToStartSearch.getRightChild(), valueToFind)
-                    : null;
-        }
-        return nonNull(nodeToStartSearch.getLeftChild()) ? findNode(nodeToStartSearch.getLeftChild(), valueToFind)
-                : null;
     }
 
     public void delete(Integer data) {
@@ -93,9 +36,12 @@ public class BinaryTree {
         //рекурсивно итерируемся по дереву в поисках нужной ноды
         if (data > node.getStorageValue()) {
             node.setRightChild(deleteNode(node.getRightChild(), data));
+            node.updateHeight();
+            node.rebalance();
         } else if (data < node.getStorageValue()) {
             node.setLeftChild(deleteNode(node.getLeftChild(), data));
-
+            node.updateHeight();
+            node.rebalance();
         } else
             //дошли сюда - значит нашли нужное значение
             //случай без детей
@@ -125,6 +71,44 @@ public class BinaryTree {
             }
         //если мы здесь - это промежуточная нода, над которой ничего не делают, просто возвращаем ее
         return node;
+    }
+    private void goThroughTree(int[] newArray, Node node) {
+        if (isNull(node.getLeftChild())) {
+            for (int i = node.getAmount(); i > 0; i--) {
+                newArray[counterForSorting] = node.getStorageValue();
+                counterForSorting++;
+            }
+        }
+        if (nonNull(node.getLeftChild())) {
+            goThroughTree(newArray, node.getLeftChild());
+            for (int i = node.getAmount(); i > 0; i--) {
+                newArray[counterForSorting] = node.getStorageValue();
+                counterForSorting++;
+            }
+        }
+        if (nonNull(node.getRightChild())) {
+            goThroughTree(newArray, node.getRightChild());
+        }
+    }
+
+    private void addNode(Node node, int value) {
+        if (value > node.getStorageValue()) {
+            if (isNull(node.getRightChild())) {
+                node.setRightChild(new Node(value));
+            } else {
+                addNode(node.getRightChild(), value);
+            }
+        } else if (value < node.getStorageValue()) {
+            if (isNull(node.getLeftChild())) {
+                node.setLeftChild(new Node(value));
+            } else {
+                addNode(node.getLeftChild(), value);
+            }
+        } else {
+            node.addAmount();
+        }
+        node.updateHeight();
+        node.rebalance();
     }
 
     private Node minValue(Node node) {
