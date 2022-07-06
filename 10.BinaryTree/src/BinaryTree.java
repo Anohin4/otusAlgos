@@ -4,18 +4,34 @@ import static java.util.Objects.nonNull;
 public class BinaryTree {
 
     private Node rootNode;
-    private final Node nullNode = null;
     private int size;
     int counterForSorting;
 
     public BinaryTree(int firstValue) {
-        this.rootNode = new Node(firstValue, 1);
+        this.rootNode = new Node(firstValue);
         this.size = 1;
     }
 
     public void insert(int value) {
-        rootNode.insert(value);
+        addNode(rootNode, value);
         size++;
+    }
+    private void addNode(Node node, int value) {
+        if (value > node.getStorageValue()) {
+            if(isNull(node.getRightChild())) {
+                node.setRightChild(new Node(value));
+            } else {
+                addNode(node.getRightChild(), value);
+            }
+        } else if(value < node.getStorageValue()) {
+            if(isNull(node.getLeftChild())) {
+                node.setLeftChild(new Node(value));
+            } else {
+                addNode(node.getLeftChild(), value);
+            }
+        } else {
+            node.addAmount();
+        }
     }
 
     public int[] returnSortedArray() {
