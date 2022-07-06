@@ -1,3 +1,5 @@
+package main;
+
 import static java.util.Objects.nonNull;
 
 public class Node {
