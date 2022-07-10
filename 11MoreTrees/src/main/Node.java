@@ -18,38 +18,6 @@ public class Node {
         this.height = 1;
     }
 
-    public void addAmount() {
-        this.amount++;
-    }
-
-    public Node getRightChild() {
-        return rightChild;
-    }
-
-    public void setStorageValue(int storageValue) {
-        this.storageValue = storageValue;
-    }
-
-    public void setRightChild(Node rightChild) {
-        this.rightChild = rightChild;
-    }
-
-    public void setLeftChild(Node leftChild) {
-        this.leftChild = leftChild;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public Node getLeftChild() {
-        return leftChild;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
     public void copyValues(Node node) {
         setAmount(node.getAmount());
         setStorageValue(node.getStorageValue());
@@ -61,18 +29,6 @@ public class Node {
         node.setHeight(height);
         node.setAmount(amount);
         return node;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public int getStorageValue() {
-        return storageValue;
     }
 
     public void leftRotation() {
@@ -120,6 +76,49 @@ public class Node {
         }
         rightChild.setLeftChild(childToMoveRight);
 
+    }
+
+    public void addAmount() {
+        this.amount++;
+    }
+
+    public Node getRightChild() {
+        return rightChild;
+    }
+
+    public void setStorageValue(int storageValue) {
+        this.storageValue = storageValue;
+    }
+
+    public void setRightChild(Node rightChild) {
+        this.rightChild = rightChild;
+    }
+
+    public void setLeftChild(Node leftChild) {
+        this.leftChild = leftChild;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public Node getLeftChild() {
+        return leftChild;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getStorageValue() {
+        return storageValue;
     }
 
 }
