@@ -141,4 +141,10 @@ public class BinaryTree {
         return node;
     }
 
+    public void clear() {
+        rootNode.setLeftChild(null);
+        rootNode.setRightChild(null);
+        size = 1;
+    }
+
 }

@@ -12,7 +12,6 @@ public class SplayTree extends BinaryTree {
     public boolean search(int valueToFind) {
         Node node = findNode(rootNode, valueToFind);
         if(nonNull(node)) {
-            System.out.println(node.getStorageValue() + " " + node.getHeight());
             return true;
         }
         return false;
@@ -36,7 +35,6 @@ public class SplayTree extends BinaryTree {
                 return findNode(nodeToStartSearch.getRightChild(), valueToFind);
             }
             //значения нет в дереве
-            return null;
         } else {
             if(nonNull(nodeToStartSearch.getLeftChild()) && nodeToStartSearch.getLeftChild().getStorageValue() == valueToFind) {
                 nodeToStartSearch.rightRotation();
@@ -45,7 +43,7 @@ public class SplayTree extends BinaryTree {
             if(nonNull(nodeToStartSearch.getLeftChild())) {
                 return findNode(nodeToStartSearch.getLeftChild(), valueToFind);
             }
-            return null;
         }
+        return null;
     }
 }

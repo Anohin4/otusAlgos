@@ -87,6 +87,12 @@ public class BinaryTree {
                 : null;
     }
 
+    public void clear() {
+        rootNode.setLeftChild(null);
+        rootNode.setRightChild(null);
+        rootNode.updateHeight();
+        size = 1;
+    }
     public void delete(int data) {
         deleteNode(this.rootNode, data);
     }
