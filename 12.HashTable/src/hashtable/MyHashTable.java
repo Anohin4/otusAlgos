@@ -1,8 +1,10 @@
+package hashtable;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-public class MyHashTable {
-    private Bucket[] buckets;
+public class MyHashTable<K, V> {
+    private Bucket<K,V>[] buckets;
     private int size;
     private final float percentOfOccupancy = 0.75f;
 
@@ -11,7 +13,7 @@ public class MyHashTable {
         size = 0;
     }
 
-    public void put(Object key, Object value) {
+    public void put(K key, V value) {
         addObjectsToBucketArray(buckets, key, value);
         size++;
         if(size > buckets.length * percentOfOccupancy) {
@@ -19,7 +21,7 @@ public class MyHashTable {
         }
     }
 
-    public boolean remove(Object key) {
+    public boolean remove(K key) {
         int hashNumber = hash(key);
         Bucket bucket = buckets[hashNumber];
         if(nonNull(bucket)) {
@@ -32,7 +34,7 @@ public class MyHashTable {
         return false;
     }
 
-    public Object get(Object key) {
+    public Object get(K key) {
         int hashNumber = hash(key);
         Bucket bucket = buckets[hashNumber];
         if(nonNull(bucket)) {
@@ -40,7 +42,7 @@ public class MyHashTable {
         }
         return null;
     }
-    private void addObjectsToBucketArray(Bucket[] bucketArray, Object key, Object value) {
+    private void addObjectsToBucketArray(Bucket[] bucketArray, K key, V value) {
         int hashNumber = hash(key, bucketArray.length);
         Bucket bucket = bucketArray[hashNumber];
         if(isNull(bucket)) {
@@ -51,16 +53,16 @@ public class MyHashTable {
     }
 
     private void rehashTable() {
-        Bucket[] resultArray = new Bucket[buckets.length * 2];
-        for (Bucket bucket : buckets) {
+        Bucket<K,V>[] resultArray = new Bucket[buckets.length * 2];
+        for (Bucket<K, V> bucket : buckets) {
             if(isNull(bucket)) {
                 continue;
             }
             while (true) {
                 //контейнер не удален - добавляем
                 if(!bucket.isDeleted()) {
-                    Object key = bucket.getKey();
-                    Object value = bucket.getValue();
+                    K key = bucket.getKey();
+                    V value = bucket.getValue();
                     addObjectsToBucketArray(resultArray, key, value);
                 }
                 //больше контейнеров нет - прерываем цикл
@@ -73,10 +75,10 @@ public class MyHashTable {
         buckets = resultArray;
     }
 
-    private int hash(Object key) {
+    private int hash(K key) {
         return hash(key, buckets.length);
     }
-    private int hash(Object key, int sizeOfArray) {
+    private int hash(K key, int sizeOfArray) {
        return key.hashCode() % sizeOfArray;
     }
 

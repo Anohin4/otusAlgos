@@ -1,32 +1,61 @@
+import hashtable.MyHashTable;
+import java.security.SecureRandom;
+import java.util.UUID;
+import trie.Trie;
+
 public class Test {
+    static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    static SecureRandom rnd = new SecureRandom();
 
     public static void main(String[] args) {
-        MyHashTable table = new MyHashTable();
+        MyHashTable<String, Integer> table = new MyHashTable();
+        testHashTable(table);
 
-        table.put("dog", 1);
-        table.remove("dog");
-        table.put("dog", 12);
-        table.put("dogw", 2);
-        table.put("oeg", 3);
-        table.put("ds1g", 4);
-        table.put("do21g", 5);
-        table.put("dogd", 6);
-        table.put("doga", 7);
-        table.put("dogxz", 8);
-
-        int dog = (int) table.get("dog");
-        if (dog != 12) {
-            throw new RuntimeException("dog != 12");
-        }
-        table.put("dog12312312xz", 9);
-        table.put("dog", 21);
-
-        dog = (int) table.get("dog");
-        if (dog != 21) {
-            throw new RuntimeException("dog != 21");
-        }
-
+        Trie<Integer> tree = new Trie<>();
+        testTrie(tree);
 
     }
+
+    private static void testTrie(Trie<Integer> tree) {
+        System.out.println("------Trie test-------");
+
+        int startTime = (int) System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) {
+            tree.insert(generateString(5), (int) (Math.random() * 1000));
+        }
+        int endTime = (int) System.currentTimeMillis() - startTime;
+        System.out.println("time of adding 10000 elements " + endTime);
+        startTime = (int) System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) {
+            tree.get(generateString(5));
+        }
+        endTime = (int) System.currentTimeMillis() - startTime;
+        System.out.println("time of getting 10000 elements " + endTime);
+    }
+
+    private static void testHashTable(MyHashTable<String, Integer> table) {
+        System.out.println("------HashTable test-------");
+
+        int startTime = (int) System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) {
+            table.put(generateString(5), (int) (Math.random() * 1000));
+        }
+        int endTime = (int) System.currentTimeMillis() - startTime;
+        System.out.println("time of adding 10000 elements " + endTime);
+        startTime = (int) System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) {
+            table.get(generateString(5));
+        }
+        endTime = (int) System.currentTimeMillis() - startTime;
+        System.out.println("time of getting 10000 elements " + endTime);
+    }
+
+    public static String generateString(int len) {
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++)
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        return sb.toString();
+    }
+
 
 }

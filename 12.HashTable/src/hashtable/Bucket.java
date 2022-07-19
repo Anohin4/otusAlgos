@@ -1,19 +1,21 @@
+package hashtable;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-public class Bucket {
-    private Object value;
-    private Object key;
-    private Bucket nextBucket;
+public class Bucket<K, V> {
+    private V value;
+    private K key;
+    private Bucket<K,V> nextBucket;
     private boolean isDeleted;
 
-    public Bucket(Object key, Object value) {
+    public Bucket(K key, V value) {
         this.key = key;
         this.value = value;
         this.isDeleted = false;
     }
 
-    public void insert(Object keyToInsert, Object valueToStore) {
+    public void insert(K keyToInsert, V valueToStore) {
         //добавляем только в двух случаях
         //1 - ключ в ячейке сопадает с нужным нам ключем, в этом случае перезаписываем
         if(keyToInsert.equals(this.key)) {
@@ -29,7 +31,7 @@ public class Bucket {
         }
         nextBucket.insert(keyToInsert, valueToStore);
     }
-    public Object get(Object keyToFind) {
+    public V get(K keyToFind) {
         if(isDeleted) {
             return null;
         }
@@ -42,7 +44,7 @@ public class Bucket {
         return null;
     }
 
-    public boolean remove(Object keyToRemove) {
+    public boolean remove(K keyToRemove) {
         if(keyToRemove.equals(this.key)) {
             isDeleted = true;
             return true;
@@ -60,11 +62,11 @@ public class Bucket {
         return isDeleted;
     }
 
-    public Object getValue() {
+    public V getValue() {
         return value;
     }
 
-    public Object getKey() {
+    public K getKey() {
         return key;
     }
 }
