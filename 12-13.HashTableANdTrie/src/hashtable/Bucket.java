@@ -32,7 +32,7 @@ public class Bucket<K, V> {
         nextBucket.insert(keyToInsert, valueToStore);
     }
     public V get(K keyToFind) {
-        if(isDeleted) {
+        if(isDeleted && keyToFind.equals(key)) {
             return null;
         }
         if(keyToFind.equals(key)) {

@@ -34,9 +34,9 @@ public class MyHashTable<K, V> {
         return false;
     }
 
-    public Object get(K key) {
+    public V get(K key) {
         int hashNumber = hash(key);
-        Bucket bucket = buckets[hashNumber];
+        Bucket<K,V> bucket = buckets[hashNumber];
         if(nonNull(bucket)) {
             return bucket.get(key);
         }
