@@ -1,12 +1,20 @@
 package main;
 
+import static java.util.Objects.isNull;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import main.model.Graph;
+import main.model.demucron.Demucron;
 
 public class Test {
 
-    public static void main(String[] args) {
-        runTests(5);
+    public static void main(String[] args) throws IllegalAccessException, NoSuchFieldException {
+        String path = "13.Graph/src/resources/graph6.txt";
+        int[][] ints = Utils.readMatrixFromEdgesList(path, true);
+        System.out.println(Arrays.deepToString(Demucron.topologicalSort(ints)));
     }
 
     public static void runTests(int numberOfTests) {
@@ -22,6 +30,16 @@ public class Test {
             Graph graph = new Graph(ints, isDirected);
             Utils.printMatrix(graph.getAdjacentyMatrix());
         }
+    }
+
+    public static  Object getFieldValue(Object object, String fieldName) throws Exception {
+        Field[] fields = object.getClass().getFields();
+        for (Field field : fields) {
+            if (field.getName().equals(fieldName) && !Modifier.isPrivate(field.getModifiers())) {
+                return field.get(object);
+            }
+        }
+        return null;
     }
 
 }
