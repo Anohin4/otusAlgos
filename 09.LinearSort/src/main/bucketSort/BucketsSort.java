@@ -25,21 +25,18 @@ public class BucketsSort implements SortingAlg {
             if (isNull(bucket)) {
                 continue;
             }
-            if (bucket.getSize() == 1) {
-                array[i++] = bucket.getFirst();
-            } else {
-                int[] storage = bucket.getStorage();
-                int size = bucket.getSize();
-                System.arraycopy(storage, 0, array, i, size);
-                i += size;
+            while (nonNull(bucket.getNextBucket())) {
+                array[i++] = bucket.getValueStorage();
+                bucket = bucket.getNextBucket();
             }
+            array[i++] = bucket.getValueStorage();
         }
     }
 
     private void addToBucket(int bucketIndex, int value) {
         Bucket bucket = bucketStorage[bucketIndex];
         if (nonNull(bucket)) {
-            bucket.addToBucket(value);
+            bucketStorage[bucketIndex] = bucket.addToBucket(value);
         } else {
             bucketStorage[bucketIndex] = new Bucket(value);
         }
