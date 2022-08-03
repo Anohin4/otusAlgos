@@ -1,4 +1,4 @@
-package main.model.demucron;
+package main.topologicSort;
 
 import java.util.Arrays;
 
