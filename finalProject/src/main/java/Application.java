@@ -12,6 +12,7 @@ public class Application {
         memTable.addValue(OperationEnum.INSERT, "1233", "321");
         memTable.addValue(OperationEnum.INSERT, "1253", "321");
         memTable.addValue(OperationEnum.INSERT, "12367", "321");
+        memTable.addValue(OperationEnum.INSERT, "12367", "32321");
         System.out.println(memTable.getSize());
 
 

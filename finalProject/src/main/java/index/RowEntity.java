@@ -2,33 +2,31 @@ package index;
 
 import static index.utils.Utils.COLUMN_SEPARATOR;
 
-public class RowEntity implements Comparable<RowEntity> {
+public class RowEntity {
     private String rowId;
     private String value;
     private Boolean deleted;
 
-    public RowEntity(String rowId, String value) {
+    public RowEntity(String indexValue, String rowId) {
         this.rowId = rowId;
-        this.value = value;
+        this.value = indexValue;
         this.deleted = false;
     }
 
-    public RowEntity(String rowId, String value, Boolean deleted) {
+    public RowEntity(String indexValue, String rowId, Boolean deleted) {
         this.rowId = rowId;
-        this.value = value;
+        this.value = indexValue;
         this.deleted = deleted;
     }
-    public RowEntity(String rowId, String value, OperationEnum deleted) {
+    public RowEntity(String indexValue, String rowId, OperationEnum deleted) {
         this.rowId = rowId;
-        this.value = value;
+        this.value = indexValue;
         if (deleted == OperationEnum.DELETE) {
             this.deleted = true;
         } else  {
             this.deleted = false;
         }
     }
-
-
 
     public String getRowId() {
         return rowId;
@@ -46,8 +44,7 @@ public class RowEntity implements Comparable<RowEntity> {
         this.value = value;
     }
 
-    @Override
-    public int compareTo(RowEntity o) {
-        return this.value.compareTo(o.getValue());
+    public Boolean getDeleted() {
+        return deleted;
     }
 }

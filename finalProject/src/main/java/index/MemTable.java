@@ -10,14 +10,14 @@ import java.io.PrintWriter;
 import type.tree.AvlTree;
 
 public class MemTable {
-    private AvlTree<RowEntity> mainTree;
+    private AvlTree mainTree;
 
     private Writer writer;
     private String indexName;
     private File journal;
     private int memTableThreshold;
 
-    public MemTable(AvlTree<RowEntity> mainTree) {
+    public MemTable(AvlTree mainTree) {
         this.mainTree = mainTree;
     }
 
@@ -29,12 +29,12 @@ public class MemTable {
     private void init(String name) throws IOException {
         this.indexName = name;
         writer = new WriterImpl();
-        this.memTableThreshold = 100;
+        this.memTableThreshold = 5;
         this.journal = new File(indexName + "Journal.txt");
         if (journal.exists()) {
             this.mainTree =  new ReaderImpl().readTreeFromFile(journal);
         } else {
-            this.mainTree = new AvlTree<>();
+            this.mainTree = new AvlTree();
 
         }
 
@@ -55,7 +55,7 @@ public class MemTable {
     private void flushMemTableToDisk() throws IOException {
         writer.writeTreeToDisk(mainTree, "testName");
         clearJournal();
-        this.mainTree = new AvlTree<>();
+        this.mainTree = new AvlTree();
 
     }
 

@@ -18,15 +18,15 @@ public class WriterImpl implements Writer {
 
 
     @Override
-    public void writeTreeToDisk(AvlTree<RowEntity> tree, String fileName) throws IOException {
-        Node<RowEntity> rootNode = tree.getRootNode();
-        Queue<Node<RowEntity>> queue = new LinkedList<>();
+    public void writeTreeToDisk(AvlTree tree, String fileName) throws IOException {
+        Node rootNode = tree.getRootNode();
+        Queue<Node> queue = new LinkedList<>();
         queue.add(rootNode);
         //todo поменять файл
         File fileToWrite = new File(fileName);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite))) {
             while (!queue.isEmpty()) {
-                Node<RowEntity> peekedRowEntity = queue.poll();
+                Node peekedRowEntity = queue.poll();
                 if (nonNull(peekedRowEntity.getLeftChild())) {
                     queue.add(peekedRowEntity.getLeftChild());
                 }

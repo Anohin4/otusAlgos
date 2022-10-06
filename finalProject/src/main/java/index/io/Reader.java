@@ -7,6 +7,6 @@ import type.tree.AvlTree;
 
 public interface Reader {
 
-    AvlTree<RowEntity> readTreeFromFile(File file) throws IOException;
+    AvlTree readTreeFromFile(File file) throws IOException;
 
 }

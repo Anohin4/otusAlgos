@@ -2,29 +2,29 @@ package type.tree;
 
 import static java.util.Objects.nonNull;
 
-public class Node<T> {
+public class Node {
 
-    private T storageValue;
+    private RowEntityForBd storageValue;
     private int height;
 
-    private Node<T> rightChild;
+    private Node rightChild;
 
-    private Node<T> leftChild;
+    private Node leftChild;
     private int amount;
 
-    public Node(T storageValue) {
+    public Node(RowEntityForBd storageValue) {
         this.storageValue = storageValue;
         this.amount = 1;
         this.height = 1;
     }
 
-    public void copyValues(Node<T> node) {
+    public void copyValues(Node node) {
         setAmount(node.getAmount());
         setStorageValue(node.getStorageValue());
     }
 
-    public Node<T> getCopy() {
-        Node<T> node = new Node<>(storageValue);
+    public Node getCopy() {
+        Node node = new Node(storageValue);
         node.setLeftChild(leftChild);
         node.setRightChild(rightChild);
         node.setHeight(height);
@@ -62,10 +62,10 @@ public class Node<T> {
     }
 
     private void leftRotation() {
-        Node<T> childToMoveLeft = rightChild.getLeftChild();
+        Node childToMoveLeft = rightChild.getLeftChild();
 
         int amountCopy = getAmount();
-        T storageCopy = getStorageValue();
+        RowEntityForBd storageCopy = getStorageValue();
 
         setAmount(rightChild.getAmount());
         setStorageValue(rightChild.getStorageValue());
@@ -75,7 +75,7 @@ public class Node<T> {
             leftChild.setAmount(amountCopy);
             leftChild.setStorageValue(storageCopy);
         } else {
-            leftChild = new Node<>(storageCopy);
+            leftChild = new Node(storageCopy);
             leftChild.setAmount(amountCopy);
         }
 
@@ -98,10 +98,10 @@ public class Node<T> {
 
     private void rightRotation() {
         //копия ноды, которая теперь новый рут
-        Node<T> childToMoveRight = leftChild.getRightChild();
+        Node childToMoveRight = leftChild.getRightChild();
         //
         int amountCopy = getAmount();
-        T storageCopy = getStorageValue();
+        RowEntityForBd storageCopy = getStorageValue();
         //1
         //делаем перевешивающую ноду текущим корнем
         setAmount(leftChild.getAmount());
@@ -114,7 +114,7 @@ public class Node<T> {
             rightChild.setAmount(amountCopy);
             rightChild.setStorageValue(storageCopy);
         } else {
-            rightChild = new Node<>(storageCopy);
+            rightChild = new Node(storageCopy);
             rightChild.setAmount(amountCopy);
         }
 
@@ -135,23 +135,28 @@ public class Node<T> {
 
     }
 
-    public void addAmount() {
-        this.amount++;
+    public boolean addAmount(RowEntityForBd valueToCompare) {
+
+        boolean result = this.storageValue.addRowId(valueToCompare.getRowIdList());
+        if (result) {
+            this.amount++;
+        }
+        return result;
     }
 
-    public Node<T> getRightChild() {
+    public Node getRightChild() {
         return rightChild;
     }
 
-    public void setStorageValue(T storageValue) {
+    public void setStorageValue(RowEntityForBd storageValue) {
         this.storageValue = storageValue;
     }
 
-    public void setRightChild(Node<T> rightChild) {
+    public void setRightChild(Node rightChild) {
         this.rightChild = rightChild;
     }
 
-    public void setLeftChild(Node<T> leftChild) {
+    public void setLeftChild(Node leftChild) {
         this.leftChild = leftChild;
     }
 
@@ -159,7 +164,7 @@ public class Node<T> {
         this.amount = amount;
     }
 
-    public Node<T> getLeftChild() {
+    public Node getLeftChild() {
         return leftChild;
     }
 
@@ -175,7 +180,12 @@ public class Node<T> {
         this.height = height;
     }
 
-    public T getStorageValue() {
+    public RowEntityForBd getStorageValue() {
         return storageValue;
+    }
+
+    @Override
+    public String toString() {
+        return getStorageValue().toString();
     }
 }

@@ -13,8 +13,8 @@ import type.tree.AvlTree;
 public class ReaderImpl implements Reader {
 
     @Override
-    public AvlTree<RowEntity> readTreeFromFile(File file) throws IOException {
-        AvlTree<RowEntity> result = new AvlTree<>();
+    public AvlTree readTreeFromFile(File file) throws IOException {
+        AvlTree result = new AvlTree();
         try (Stream<String> stream = Files.lines(Paths.get(file.getName()))) {
             stream.forEach(elem -> result.insert(getRowEntityFromDescription(elem)));
         }

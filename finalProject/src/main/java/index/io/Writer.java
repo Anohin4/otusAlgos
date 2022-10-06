@@ -8,7 +8,7 @@ import type.tree.AvlTree;
 
 public interface Writer {
 
-    void writeTreeToDisk(AvlTree<RowEntity> rowEntity, String testName) throws IOException;
+    void writeTreeToDisk(AvlTree rowEntity, String testName) throws IOException;
 
     void logEntity(File journal, OperationEnum operation, String key, String value) throws IOException;
 }

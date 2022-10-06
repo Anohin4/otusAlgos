@@ -4,13 +4,15 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import index.RowEntity;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
 Простое дерево, без оптимизаций
  */
-public class BinaryTree<T extends RowEntity> {
+public class BinaryTree {
 
-    protected Node<T> rootNode;
+    protected Node rootNode;
 
     public int getSize() {
         return size;
@@ -19,55 +21,66 @@ public class BinaryTree<T extends RowEntity> {
     protected int size;
     protected int counterForSorting;
 
-    public BinaryTree(T firstValue) {
-        this.rootNode = new Node<>(firstValue);
+    public BinaryTree(RowEntityForBd firstValue) {
+        this.rootNode = new Node(firstValue);
         this.size = 1;
     }
+
     public BinaryTree() {
         this.rootNode = null;
         this.size = 0;
     }
 
-    public void insert(T value) {
-        if(size == 0) {
-            rootNode = new Node<>(value);
+    public void insert(RowEntity value) {
+        List<RowId> rowIds = new ArrayList<>();
+        rowIds.add(new RowId(value.getRowId(), value.getDeleted()));
+        insert(new RowEntityForBd(value.getValue(), rowIds));
+    }
+
+    public void insert(RowEntityForBd value) {
+        if (size == 0) {
+            rootNode = new Node(value);
             size = 1;
         } else {
-            addNode(getRootNode(), value);
-            size++;
+            boolean result = addNode(getRootNode(), value);
+            if(result) {
+                size++;
+            }
         }
     }
 
 
-    protected void addNode(Node<T> node, T valueToCompare) {
-        T storageValue = node.getStorageValue();
+    protected boolean addNode(Node node, RowEntityForBd valueToCompare) {
+        RowEntityForBd storageValue = node.getStorageValue();
         if (valueToCompare.compareTo(storageValue) > 0) {
-            if(isNull(node.getRightChild())) {
-                node.setRightChild(new Node<>(valueToCompare));
+            if (isNull(node.getRightChild())) {
+                node.setRightChild(new Node(valueToCompare));
+                return true;
             } else {
-                addNode(node.getRightChild(), valueToCompare);
+                return addNode(node.getRightChild(), valueToCompare);
             }
-        } else if(valueToCompare.compareTo(storageValue) < 0) {
-            if(isNull(node.getLeftChild())) {
-                node.setLeftChild(new Node<>(valueToCompare));
+        } else if (valueToCompare.compareTo(storageValue) < 0) {
+            if (isNull(node.getLeftChild())) {
+                node.setLeftChild(new Node(valueToCompare));
+                return true;
             } else {
-                addNode(node.getLeftChild(), valueToCompare);
+                return addNode(node.getLeftChild(), valueToCompare);
             }
         } else {
-            node.addAmount();
+            return node.addAmount(valueToCompare);
         }
     }
 
-    public Node<T> getRootNode() {
+    public Node getRootNode() {
         return rootNode;
     }
 
-    public boolean search(T i) {
-        Node<T> node = findNode(rootNode, i);
+    public boolean search(RowEntityForBd i) {
+        Node node = findNode(rootNode, i);
         return !isNull(node);
     }
 
-    protected void goThroughTree(T[] newArray, Node<T> node) {
+    protected void goThroughTree(RowEntityForBd[] newArray, Node node) {
         if (isNull(node.getLeftChild())) {
             for (int i = node.getAmount(); i > 0; i--) {
                 newArray[counterForSorting] = node.getStorageValue();
@@ -86,7 +99,7 @@ public class BinaryTree<T extends RowEntity> {
         }
     }
 
-    protected Node<T> findNode(Node<T> nodeToStartSearch, T valueToFind) {
+    protected Node findNode(Node nodeToStartSearch, RowEntityForBd valueToFind) {
         if (valueToFind.compareTo(nodeToStartSearch.getStorageValue()) == 0) {
             return nodeToStartSearch;
         }
@@ -104,11 +117,12 @@ public class BinaryTree<T extends RowEntity> {
         rootNode.updateHeight();
         size = 1;
     }
-    public void delete(T data) {
+
+    public void delete(RowEntityForBd data) {
         deleteNode(this.rootNode, data);
     }
 
-    protected Node<T> deleteNode(Node<T> node, T data) {
+    protected Node deleteNode(Node node, RowEntityForBd data) {
         if (isNull(node)) {
             //если мы пришли сюда - нужного числа нет
             return null;
@@ -129,7 +143,7 @@ public class BinaryTree<T extends RowEntity> {
                 //есть оба ребенка
             } else if (nonNull(node.getLeftChild()) && nonNull(node.getRightChild())) {
                 //подставляем значение и удаляем ноду
-                Node<T> nodeToSwitch = minValue(node.getRightChild());
+                Node nodeToSwitch = minValue(node.getRightChild());
                 node.copyValues(nodeToSwitch);
                 return deleteNode(node.getRightChild(), node.getStorageValue());
             } else if (this.rootNode.getStorageValue() == data) {
@@ -149,7 +163,7 @@ public class BinaryTree<T extends RowEntity> {
         return node;
     }
 
-    private Node<T> minValue(Node<T> node) {
+    private Node minValue(Node node) {
 
         if (node.getLeftChild() != null) {
             return minValue(node.getLeftChild());

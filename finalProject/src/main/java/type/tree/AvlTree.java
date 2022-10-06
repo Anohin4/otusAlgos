@@ -3,19 +3,23 @@ package type.tree;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-import index.RowEntity;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 
-public class AvlTree<T extends RowEntity> extends BinaryTree<T> {
+public class AvlTree extends BinaryTree {
 
     public AvlTree() {
         super();
     }
 
-    public AvlTree(T value) {
+    public AvlTree(RowEntityForBd value) {
         super(value);
     }
+
     @Override
-    protected Node<T> deleteNode(Node<T> node, T data) {
+    protected Node deleteNode(Node node, RowEntityForBd data) {
         if (isNull(node)) {
             //если мы пришли сюда - нужного числа нет
             return null;
@@ -39,7 +43,7 @@ public class AvlTree<T extends RowEntity> extends BinaryTree<T> {
                 //есть оба ребенка
             } else if (nonNull(node.getLeftChild()) && nonNull(node.getRightChild())) {
                 //подставляем значение и удаляем ноду
-                Node<T> nodeToSwitch = minValue(node.getRightChild());
+                Node nodeToSwitch = minValue(node.getRightChild());
                 node.copyValues(nodeToSwitch);
                 return deleteNode(node.getRightChild(), node.getStorageValue());
             } else if (this.rootNode.getStorageValue() == data) {
@@ -60,18 +64,20 @@ public class AvlTree<T extends RowEntity> extends BinaryTree<T> {
     }
 
     @Override
-    protected void addNode(Node<T> node, T value) {
-        super.addNode(node, value);
+    protected boolean addNode(Node node, RowEntityForBd value) {
+        boolean result = super.addNode(node, value);
         node.updateHeight();
         node.rebalance();
+        return result;
     }
 
-    private Node<T> minValue(Node<T> node) {
+    private Node minValue(Node node) {
 
         if (node.getLeftChild() != null) {
             return minValue(node.getLeftChild());
         }
         return node;
     }
+
 
 }
