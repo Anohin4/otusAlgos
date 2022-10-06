@@ -1,9 +1,8 @@
-package main.model;
+package main.model.arrays.graphs;
 
 import main.model.arrays.arrays.SpaceArray;
 
 public class Vertex {
-    private String name;
     private SpaceArray<Integer> connectedVertexes;
     private SpaceArray<Integer> weightOfEdges;
 
@@ -20,12 +19,17 @@ public class Vertex {
         weightOfEdges.add(weightOfEdge);
     }
 
-    public int[] getEdges() {
+    public int[] getAllConnectedVertexes() {
         int[] result = new int[connectedVertexes.size()];
         for ( int i = 0; i < connectedVertexes.size(); i++) {
             result[i] = connectedVertexes.get(i);
         }
         return result;
     }
+
+    public int getWeightOfEdge(int numberOfConnectedVertexInArray) {
+        return weightOfEdges.get(numberOfConnectedVertexInArray);
+    }
+
 
 }

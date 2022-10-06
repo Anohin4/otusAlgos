@@ -1,17 +1,16 @@
-package main.model;
+package main.model.arrays.graphs;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import main.model.arrays.hashtable.MyHashTable;
 
-public class Graph {
-    String label;
+public class GraphWithVertex extends AbstractGraph{
     boolean isDirected;
     boolean edgesWithWeight;
     MyHashTable<Integer, Vertex> vertexMap;
 
-    public Graph(int[][] array, boolean isDirected) {
+    public GraphWithVertex(int[][] array, boolean isDirected) {
         this.vertexMap = new MyHashTable<>();
         this.isDirected = isDirected;
         if(array[0].length == 3) {
@@ -54,7 +53,7 @@ public class Graph {
     public boolean isAdjacent(int vertexNumber, int vertexToCheck) {
         Vertex vertex = vertexMap.get(vertexNumber);
         if(nonNull(vertex)) {
-            int[] edges = vertex.getEdges();
+            int[] edges = vertex.getAllConnectedVertexes();
             for( int i : edges) {
                 if (i == vertexToCheck) {
                     return true;
@@ -67,7 +66,7 @@ public class Graph {
     public int[] getAdjacentVertexes(int vertexNumber) {
         Vertex vertex = vertexMap.get(vertexNumber);
         if(nonNull(vertex)) {
-            return vertex.getEdges();
+            return vertex.getAllConnectedVertexes();
         }
         return null;
     }
@@ -77,7 +76,7 @@ public class Graph {
         int i = 1;
         while (i <= size) {
             int[] array = result[i - 1];
-            int[] edges = vertexMap.get(i).getEdges();
+            int[] edges = vertexMap.get(i).getAllConnectedVertexes();
             for (int edge: edges) {
                 array[edge - 1] = array[edge - 1] + 1;
             }
@@ -89,7 +88,7 @@ public class Graph {
         int result = 0;
         Vertex vertex = vertexMap.get(vertexNumber);
         if(nonNull(vertex)) {
-            for (int edge : vertex.getEdges()) {
+            for (int edge : vertex.getAllConnectedVertexes()) {
                 if(edge ==  vertexNumber) {
                     result += 2;
                 } else {
@@ -99,10 +98,13 @@ public class Graph {
         }
         return result;
     }
-    private void generateGraphFromEdgeArray(int[][] arrayOfEdges) {
-        for (int[] edge : arrayOfEdges) {
-            addEdge(edge);
-        }
+    public int getNumberOfVertexes() {
+        return vertexMap.getSize();
     }
+
+    public Vertex getVertex(int number) {
+        return vertexMap.get(number);
+    }
+
 
 }

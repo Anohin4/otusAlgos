@@ -3,17 +3,17 @@ package main;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import main.model.Graph;
-import main.topologicSort.Demucron;
+import main.minSpaningTree.Kruskal;
+import main.model.arrays.graphs.GraphWithVertex;
 import main.topologicSort.Tarjan;
 
 public class Test {
 
     public static void main(String[] args) throws IllegalAccessException, NoSuchFieldException {
-        String path = "13.Graph/src/resources/graph6.txt";
-        int[][] ints = Utils.readMatrixFromEdgesList(path, true);
-        //System.out.println(Arrays.deepToString(Demucron.topologicalSort(ints)));
-        System.out.println(Arrays.toString(Tarjan.topologicalSort(ints)));
+        String path = "13.Graph/src/resources/graph5.txt";
+        int[][] ints = Utils.readGraphFromFile(path);
+        System.out.println(Arrays.deepToString(Kruskal.getMinSpanningTree(ints)));
+        //System.out.println(Arrays.toString(Tarjan.topologicalSort(ints)));
     }
 
     public static void runTests(int numberOfTests) {
@@ -26,8 +26,8 @@ public class Test {
             if (i > 3) {
                 isDirected = true;
             }
-            Graph graph = new Graph(ints, isDirected);
-            Utils.printMatrix(graph.getAdjacentyMatrix());
+            GraphWithVertex graphWithVertex = new GraphWithVertex(ints, isDirected);
+            Utils.printMatrix(graphWithVertex.getAdjacentyMatrix());
         }
     }
 
