@@ -171,4 +171,11 @@ public class BinaryTree {
         return node;
     }
 
+    public void setRootNode(Node rootNode) {
+        this.rootNode = rootNode;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
 }

@@ -1,68 +1,58 @@
 package index;
 
-import index.io.Reader;
-import index.io.ReaderImpl;
-import index.io.Writer;
-import index.io.WriterImpl;
+import index.io.TreeReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import type.tree.AvlTree;
 
 public class MemTable {
-    private AvlTree mainTree;
 
-    private Writer writer;
-    private String indexName;
+    private AvlTree mainTree;
     private File journal;
+
     private int memTableThreshold;
 
     public MemTable(AvlTree mainTree) {
         this.mainTree = mainTree;
     }
 
-    public MemTable(String indexName) throws IOException {
-        init(indexName);
-    }
-    public int getSize() {return mainTree.getSize();};
-
-    private void init(String name) throws IOException {
-        this.indexName = name;
-        writer = new WriterImpl();
+    public MemTable(String pathToDir, String name, TreeReader reader) throws IOException {
         this.memTableThreshold = 5;
-        this.journal = new File(indexName + "Journal.txt");
+        this.journal = new File(pathToDir + File.separator + name + "Journal.txt");
         if (journal.exists()) {
-            this.mainTree =  new ReaderImpl().readTreeFromFile(journal);
+            this.mainTree = reader.readTreeFromFile(journal);
         } else {
+            journal.createNewFile();
             this.mainTree = new AvlTree();
 
         }
+    }
 
+    public int getSize() {
+        return mainTree.getSize();
     }
 
     public void addValue(OperationEnum operation, String key, String value) throws IOException {
-        writer.logEntity(journal, operation, key, value);
         RowEntity rowEntity = new RowEntity(key, value);
-        if(operation.equals(OperationEnum.DELETE)) {
+        if (operation.equals(OperationEnum.DELETE)) {
             rowEntity = new RowEntity(key, value, true);
         }
         mainTree.insert(rowEntity);
-        if(mainTree.getSize() >= memTableThreshold) {
-            flushMemTableToDisk();
-        }
     }
 
-    private void flushMemTableToDisk() throws IOException {
-        writer.writeTreeToDisk(mainTree, "testName");
-        clearJournal();
+    public boolean isFull() {
+        return mainTree.getSize() >= memTableThreshold;
+    }
+
+    public File getJournal() {
+        return journal;
+    }
+
+    public AvlTree getMainTree() {
+        return mainTree;
+    }
+
+    public void clearMemTable() {
         this.mainTree = new AvlTree();
-
     }
-
-    private void clearJournal() throws IOException {
-        PrintWriter writer = new PrintWriter(journal);
-        writer.print("");
-        writer.close();
-    }
-
 }
