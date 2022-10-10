@@ -5,7 +5,7 @@ import type.tree.AvlTree;
 
 public interface BloomFilter {
 
-    boolean contains(Object object);
-    void add(Object object);
+    boolean contains(String object);
+    void add(String object);
 
 }
