@@ -7,8 +7,10 @@ import bloomfilter.BloomFilter;
 import index.OperationEnum;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -43,7 +45,9 @@ public class WriterImpl implements Writer {
 
     @Override
     public void writeBloomFilterToDisk(BloomFilter bloomFilter, String fileName) throws IOException {
-
+        try(ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            outputStream.writeObject(bloomFilter);
+        }
     }
 
     @Override

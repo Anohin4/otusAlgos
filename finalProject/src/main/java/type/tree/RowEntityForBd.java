@@ -7,8 +7,8 @@ import java.util.List;
 
 public class RowEntityForBd implements Comparable<RowEntityForBd> {
 
-    public String indexValue;
-    public List<RowId> rowIdList;
+    private String indexValue;
+    private List<RowId> rowIdList;
 
     public RowEntityForBd(String indexValue, List<RowId> rowIdList) {
         this.indexValue = indexValue;

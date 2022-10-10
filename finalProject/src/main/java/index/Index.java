@@ -35,6 +35,9 @@ public class Index {
             flushMemTableToDisk();
         }
     }
+    public void getData(String indexValue) {
+
+    }
 
     private void flushMemTableToDisk() throws IOException {
         service.rollingMerge(memTable.getMainTree());
