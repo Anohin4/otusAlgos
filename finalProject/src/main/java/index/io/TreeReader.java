@@ -11,5 +11,5 @@ public interface TreeReader {
     AvlTree readTreeFromFile(File file) throws IOException;
     List<BloomFilter> readAllBloomFilters(int lvl);
 
-    BloomFilter writeBloomFilterFromDisk(String fileName) throws IOException, ClassNotFoundException;
+    BloomFilter readBloomFilterFromDisk(String fileName) throws IOException, ClassNotFoundException;
 }

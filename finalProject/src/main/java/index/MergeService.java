@@ -15,20 +15,9 @@ import java.util.Queue;
 import type.tree.AvlTree;
 import type.tree.Node;
 
-public class MergeService {
-
-    private final String bloomFilterTemplateName = "_blm_";
-    private final Writer writer;
-    private final TreeReader reader;
-    private final String indexName;
-    private final String pathToDir;
-    int maxLvl = 2;
-
-    public MergeService(Writer writer, TreeReader reader, String indexName, String pathToDir) {
-        this.writer = writer;
-        this.indexName = indexName;
-        this.pathToDir = pathToDir;
-        this.reader = reader;
+public class MergeService  extends AbstractIOService {
+    public MergeService(Writer writer, TreeReader reader, String indexName, String pathToDir, int maxLvl) {
+        super(indexName, pathToDir, maxLvl, writer, reader);
     }
 
     public void rollingMerge(AvlTree treeToFlush) throws IOException {
@@ -59,12 +48,12 @@ public class MergeService {
 
     private boolean prepareTreeToMerge(int currentLvl, AvlTree treeToFlush) throws IOException {
         String nameTemplate = indexName + getLvlTemplate(currentLvl);
-        AvlTree resultTree = reader.readTreeFromFile(new File(nameTemplate + 0));
+        AvlTree resultTree = reader.readTreeFromFile(new File(pathToDir+ File.separator +nameTemplate + 0));
 
         //читаем все деревья и мердим их по возрастанию даты обновлений
         int currentTree = 1;
         while (currentTree < 9) {
-            mergeTrees(resultTree, reader.readTreeFromFile(new File(nameTemplate + currentTree)));
+            mergeTrees(resultTree, reader.readTreeFromFile(new File(pathToDir+ File.separator +nameTemplate + currentTree)));
             currentTree++;
         }
 
@@ -80,27 +69,10 @@ public class MergeService {
 
 
     private void writeTree(AvlTree treeToFlush, int currentLvl, int numberOfFile) throws IOException {
-        writer.writeTreeToDisk(treeToFlush, indexName + getLvlTemplate(currentLvl) + numberOfFile);
+        writer.writeTreeToDisk(treeToFlush, pathToDir+ File.separator  + indexName + getLvlTemplate(currentLvl) + numberOfFile);
         BloomFilter bloomFilter = new BloomFilterImpl(treeToFlush);
         writer.writeBloomFilterToDisk(bloomFilter,
-                indexName + bloomFilterTemplateName + getLvlTemplate(currentLvl) + numberOfFile);
-    }
-
-    private boolean checkNextLvl(int currentLvl) {
-        return currentLvl != maxLvl && getNumberOfFilesThatLvl(currentLvl + 1) == 10;
-    }
-
-
-    private void removeObsoleteFiles(int lvl) {
-        lvl--;
-        File dir = new File(pathToDir);
-        while (lvl > 0) {
-            final int lvlToDelete = lvl;
-            File[] files = dir.listFiles((dir1, name) -> name.startsWith(indexName + getLvlTemplate(lvlToDelete))
-                    || name.startsWith(indexName + bloomFilterTemplateName + getLvlTemplate(lvlToDelete)));
-            Arrays.stream(files).forEach(File::delete);
-            lvl--;
-        }
+                pathToDir + File.separator + bloomFilterTemplateName + getLvlTemplate(currentLvl) + numberOfFile);
     }
 
     private void mergeTrees(AvlTree treeFromFile, AvlTree newerTree) {
@@ -118,19 +90,6 @@ public class MergeService {
         }
     }
 
-    private String getLvlTemplate(int lvl) {
-        return "_L" + lvl + "_";
-    }
 
-    private int getNumberOfFilesThatLvl(int lvl) {
-        File dir = new File(pathToDir);
-        String nameTemplate = indexName + getLvlTemplate(1);
-        if (!dir.exists()) {
-            throw new RuntimeException("Нет директории");
-        }
-        //находим количество файлов этого уровня
-        return Objects.requireNonNull(
-                dir.listFiles((dir1, name) -> name.startsWith(nameTemplate + getLvlTemplate(lvl)))).length;
-    }
 
 }

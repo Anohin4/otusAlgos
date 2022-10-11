@@ -1,26 +1,24 @@
 package index;
 
-import static index.utils.Utils.COLUMN_SEPARATOR;
-
 public class RowEntity {
     private String rowId;
-    private String value;
+    private String indexValue;
     private Boolean deleted;
 
     public RowEntity(String indexValue, String rowId) {
         this.rowId = rowId;
-        this.value = indexValue;
+        this.indexValue = indexValue;
         this.deleted = false;
     }
 
     public RowEntity(String indexValue, String rowId, Boolean deleted) {
         this.rowId = rowId;
-        this.value = indexValue;
+        this.indexValue = indexValue;
         this.deleted = deleted;
     }
     public RowEntity(String indexValue, String rowId, OperationEnum deleted) {
         this.rowId = rowId;
-        this.value = indexValue;
+        this.indexValue = indexValue;
         if (deleted == OperationEnum.DELETE) {
             this.deleted = true;
         } else  {
@@ -36,15 +34,22 @@ public class RowEntity {
         this.rowId = rowId;
     }
 
-    public String getValue() {
-        return value;
+    public String getIndexValue() {
+        return indexValue;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setIndexValue(String indexValue) {
+        this.indexValue = indexValue;
     }
 
     public Boolean getDeleted() {
         return deleted;
+    }
+
+    @Override
+    public String toString() {
+        return "RowEntity " +
+
+                "indexValue='" + indexValue + '\'' + "," + "rowId='" + rowId ;
     }
 }

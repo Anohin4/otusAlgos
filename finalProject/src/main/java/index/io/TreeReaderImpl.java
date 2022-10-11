@@ -19,7 +19,7 @@ public class TreeReaderImpl implements TreeReader {
     @Override
     public AvlTree readTreeFromFile(File file) throws IOException {
         AvlTree result = new AvlTree();
-        try (Stream<String> stream = Files.lines(Paths.get(file.getName()))) {
+        try (Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()))) {
             stream.forEach(elem -> result.insert(getRowEntityFromDescription(elem)));
         }
         return result;
@@ -31,7 +31,7 @@ public class TreeReaderImpl implements TreeReader {
     }
 
     @Override
-    public BloomFilter writeBloomFilterFromDisk(String fileName) throws IOException, ClassNotFoundException {
+    public BloomFilter readBloomFilterFromDisk(String fileName) throws IOException, ClassNotFoundException {
         BloomFilterImpl result;
         try(ObjectInputStream outputStream = new ObjectInputStream(new FileInputStream(fileName))) {
             result = (BloomFilterImpl) outputStream.readObject();

@@ -6,6 +6,7 @@ import static java.util.Objects.nonNull;
 import index.RowEntity;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /*
 Простое дерево, без оптимизаций
@@ -34,7 +35,7 @@ public class BinaryTree {
     public void insert(RowEntity value) {
         List<RowId> rowIds = new ArrayList<>();
         rowIds.add(new RowId(value.getRowId(), value.getDeleted()));
-        insert(new RowEntityForBd(value.getValue(), rowIds));
+        insert(new RowEntityForBd(value.getIndexValue(), rowIds));
     }
 
     public void insert(RowEntityForBd value) {
@@ -78,6 +79,14 @@ public class BinaryTree {
     public boolean search(RowEntityForBd i) {
         Node node = findNode(rootNode, i);
         return !isNull(node);
+    }
+    public Optional<RowEntityForBd> getValue(String value) {
+        Node node = findNode(rootNode, new RowEntityForBd(value, new ArrayList<>()));
+        if(nonNull(node)) {
+            return Optional.ofNullable(node.getStorageValue());
+        }
+        return Optional.empty();
+
     }
 
     protected void goThroughTree(RowEntityForBd[] newArray, Node node) {

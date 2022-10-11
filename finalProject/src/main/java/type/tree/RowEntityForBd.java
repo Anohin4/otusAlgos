@@ -27,7 +27,7 @@ public class RowEntityForBd implements Comparable<RowEntityForBd> {
     /**
      * возвращает true если был добавлен элемент и изменено количествор
      * false усли количество не поменялось
-     * @param rowIdToInsert
+     * @param rowIdToInsertList
      * @return
      */
     public boolean addRowId(List<RowId> rowIdToInsertList) {
@@ -35,6 +35,7 @@ public class RowEntityForBd implements Comparable<RowEntityForBd> {
             rowIdList.addAll(rowIdToInsertList);
             return true;
         }
+        List<RowId> listToAdd = new ArrayList<>();
         for (RowId rowIdToInsert : rowIdToInsertList) {
             //todo переделать это говно
             for (RowId id : rowIdList) {
@@ -42,9 +43,10 @@ public class RowEntityForBd implements Comparable<RowEntityForBd> {
                     id.setTombStone(rowIdToInsert.isTombStone());
                     break;
                 }
-                rowIdList.add(rowIdToInsert);
+                listToAdd.add(rowIdToInsert);
             }
         }
+        rowIdList.addAll(listToAdd);
         return true;
     }
 
