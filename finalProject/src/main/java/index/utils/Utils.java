@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -27,11 +28,14 @@ public class Utils {
         }
     }
     public static String COLUMN_SEPARATOR = ">>>;<<<";
-    public static RowEntity getRowEntityFromDescription(String descriptionFromFile) {
+    public static RowEntity getRowEntityForJournal(String descriptionFromFile) {
         String[] split = descriptionFromFile.split(COLUMN_SEPARATOR);
+        if(split.length == 2) {
+            return new RowEntity(split[0], split[1], OperationEnum.INSERT);
+        }
         return new RowEntity(split[1], split[2], OperationEnum.valueOf(split[0]));
-
     }
+
     public static int getHashSeed(int number) {
         return listOfSeeds.get(number);
     }

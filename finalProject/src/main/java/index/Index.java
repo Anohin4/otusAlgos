@@ -53,7 +53,7 @@ public class Index {
     }
 
     public void insert(OperationEnum operation, String key, String value) throws IOException {
-        writer.logEntity(memTable.getJournal(), operation, key, value);
+        //writer.logEntity(memTable.getJournal(), operation, key, value);
         memTable.addValue(operation, key, value);
         if(memTable.isFull()) {
             flushMemTableToDisk();
@@ -69,7 +69,7 @@ public class Index {
 
     private void flushMemTableToDisk() throws IOException {
         service.rollingMerge(memTable.getMainTree());
-        writer.clearFile(memTable.getJournal());
+        //writer.clearFile(memTable.getJournal());
         memTable.clearMemTable();
     }
 

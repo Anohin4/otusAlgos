@@ -33,8 +33,9 @@ public class SearchService extends AbstractIOService {
                     AvlTree avlTree = reader.readTreeFromFile(
                             new File(pathToDir+ File.separator  + indexName + getLvlTemplate(currentLvl) + numberOfFilesThatLvl));
                     extractTreeToSet(avlTree, indexValue, result, deleted);
-                    numberOfFilesThatLvl--;
+
                 }
+                numberOfFilesThatLvl--;
             }
             currentLvl++;
         }

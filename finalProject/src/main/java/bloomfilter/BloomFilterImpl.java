@@ -53,7 +53,7 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
     public boolean probablyContains(String object) {
         for (int i =0; i <= numberOfHashFunc; i ++) {
             int hash32 = MurmurHash.hash32(object.getBytes(), object.getBytes().length, getHashSeed(i));
-            boolean result = bitSet.get(hash32 % size);
+            boolean result = bitSet.get(Math.abs(hash32)%size);
             if(!result) {
                 return false;
             }

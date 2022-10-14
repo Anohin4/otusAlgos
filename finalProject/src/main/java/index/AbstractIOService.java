@@ -47,7 +47,7 @@ public abstract class AbstractIOService {
 
     protected int getNumberOfFilesThatLvl(int lvl) {
         File dir = new File(pathToDir);
-        String nameTemplate = indexName + getLvlTemplate(1);
+        String nameTemplate = indexName + getLvlTemplate(lvl);
         if (!dir.exists()) {
             throw new RuntimeException("Нет директории");
         }

@@ -1,6 +1,6 @@
 package index.io;
 
-import static index.utils.Utils.getRowEntityFromDescription;
+import static index.utils.Utils.getRowEntityForJournal;
 
 import bloomfilter.BloomFilter;
 import bloomfilter.BloomFilterImpl;
@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Stream;
 import type.tree.AvlTree;
+import type.tree.RowEntityForBd;
 
 public class TreeReaderImpl implements TreeReader {
 
@@ -20,7 +21,16 @@ public class TreeReaderImpl implements TreeReader {
     public AvlTree readTreeFromFile(File file) throws IOException {
         AvlTree result = new AvlTree();
         try (Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()))) {
-            stream.forEach(elem -> result.insert(getRowEntityFromDescription(elem)));
+            stream.forEach(elem -> result.insert(new RowEntityForBd(elem)));
+        }
+        return result;
+    }
+
+    @Override
+    public AvlTree readTreeForJournal(File file) throws IOException {
+        AvlTree result = new AvlTree();
+        try (Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()))) {
+            stream.forEach(elem -> result.insert(getRowEntityForJournal(elem)));
         }
         return result;
     }

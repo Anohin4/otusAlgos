@@ -24,10 +24,10 @@ public class MemTable {
     }
 
     public MemTable(String pathToDir, String name, TreeReader reader) throws IOException {
-        this.memTableThreshold = 5000;
+        this.memTableThreshold = 50000;
         this.journal = new File(pathToDir  + File.separator + name + "Journal.txt");
         if (journal.exists()) {
-            this.mainTree = reader.readTreeFromFile(journal);
+            this.mainTree = reader.readTreeForJournal(journal);
         } else {
             journal.createNewFile();
             this.mainTree = new AvlTree();
