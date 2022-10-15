@@ -25,13 +25,10 @@ public class RowEntityForBd implements Comparable<RowEntityForBd> {
     }
 
     /**
-     * возвращает true если был добавлен элемент и изменено количествор
-     * false усли количество не поменялось
-     * @param rowIdToInsertList
-     * @return
+     * возвращает true если был добавлен элемент и изменено количествор false усли количество не поменялось
      */
     public boolean addRowId(List<RowId> rowIdToInsertList) {
-        if(rowIdList.isEmpty()) {
+        if (rowIdList.isEmpty()) {
             rowIdList.addAll(rowIdToInsertList);
             return true;
         }

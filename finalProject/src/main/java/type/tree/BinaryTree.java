@@ -44,7 +44,7 @@ public class BinaryTree {
             size = 1;
         } else {
             boolean result = addNode(getRootNode(), value);
-            if(result) {
+            if (result) {
                 size++;
             }
         }
@@ -80,9 +80,10 @@ public class BinaryTree {
         Node node = findNode(rootNode, i);
         return !isNull(node);
     }
+
     public Optional<RowEntityForBd> getValue(String value) {
         Node node = findNode(rootNode, new RowEntityForBd(value, new ArrayList<>()));
-        if(nonNull(node)) {
+        if (nonNull(node)) {
             return Optional.ofNullable(node.getStorageValue());
         }
         return Optional.empty();
@@ -109,6 +110,9 @@ public class BinaryTree {
     }
 
     protected Node findNode(Node nodeToStartSearch, RowEntityForBd valueToFind) {
+        if (isNull(nodeToStartSearch)) {
+            return null;
+        }
         if (valueToFind.compareTo(nodeToStartSearch.getStorageValue()) == 0) {
             return nodeToStartSearch;
         }

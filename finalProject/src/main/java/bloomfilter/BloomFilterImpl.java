@@ -46,7 +46,7 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
     private void init(int maxNumberOfElements) {
         this.size = (int) ((maxNumberOfElements * Math.abs(Math.log(fpr))) / (Math.pow(Math.log(2), 2)));
         this.numberOfHashFunc =  (int) ((size / maxNumberOfElements) * Math.log(2));
-        this.bitSet = new BitSet(maxNumberOfElements);
+        this.bitSet = new BitSet(size);
     }
 
     @Override

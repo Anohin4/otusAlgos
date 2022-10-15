@@ -1,6 +1,7 @@
 package type.tree;
 
 public class RowId {
+
     private String rowId;
     private boolean isTombStone;
 
@@ -33,7 +34,7 @@ public class RowId {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(rowId);
-        if(isTombStone) {
+        if (isTombStone) {
             sb.append("_D");
         }
         return sb.toString();

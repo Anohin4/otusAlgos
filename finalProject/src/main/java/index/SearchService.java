@@ -21,7 +21,7 @@ public class SearchService extends AbstractIOService {
     }
     public Set<String> findEntities(String indexValue, Set<String> result , Set<String> deleted) throws Exception {
         int currentLvl = 1;
-        while (currentLvl < maxLvl) {
+        while (currentLvl <= maxLvl) {
 
             int numberOfFilesThatLvl = getNumberOfFilesThatLvl(currentLvl);
             numberOfFilesThatLvl--;

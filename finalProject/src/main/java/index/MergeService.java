@@ -43,10 +43,6 @@ public class MergeService  extends AbstractIOService {
                 lvl++;
             }
 
-            //скидываем на уровень ниже
-//            if (lvl != maxLvl) {
-//                lvl++;
-//            }
             writeTree(treeToFlush, lvl, getNumberOfFilesThatLvl(lvl));
         }
         removeObsoleteFiles(lvl);
@@ -92,6 +88,7 @@ public class MergeService  extends AbstractIOService {
 
         //меняем у дерева рут на актуальный
         treeToFlush.setRootNode(resultTree.getRootNode());
+        treeToFlush.setSize(resultTree.getSize());
 
         //проверяем, нужен ли мердж на уровне ниже
         return checkNextLvl(currentLvl);
