@@ -25,6 +25,8 @@ public class SearchService extends AbstractIOService {
             while (numberOfFilesThatLvl >= 0) {
                 String bloomFilterName = pathToDir + File.separator + bloomFilterTemplateName + getLvlTemplate(currentLvl)
                         + numberOfFilesThatLvl;
+                String fileName =
+                        pathToDir + File.separator + indexName + getLvlTemplate(currentLvl) + numberOfFilesThatLvl;
                 BloomFilter bloomFilter;
                 if(bloomFilterCache.containsKey(bloomFilterName)) {
                     bloomFilter = bloomFilterCache.get(bloomFilterName);
@@ -34,10 +36,9 @@ public class SearchService extends AbstractIOService {
                     bloomFilterCache.put(bloomFilterName, bloomFilter);
                 }
                 if(bloomFilter.probablyContains(indexValue)) {
-                    String fileName =
-                            pathToDir + File.separator + indexName + getLvlTemplate(currentLvl) + numberOfFilesThatLvl;
+
                     AvlTree avlTree = reader.readTreeFromFile(
-                            new File(pathToDir+ File.separator  + indexName + getLvlTemplate(currentLvl) + numberOfFilesThatLvl));
+                            new File(fileName));
                     extractTreeToSet(avlTree, indexValue, result, deleted);
 
                 }

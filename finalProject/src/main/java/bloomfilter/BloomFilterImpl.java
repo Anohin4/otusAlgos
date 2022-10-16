@@ -5,9 +5,8 @@ import static java.lang.Math.log;
 import static java.lang.Math.pow;
 import static java.util.Objects.nonNull;
 
-import com.google.common.hash.Hashing;
+import index.utils.MurmurHash;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -17,9 +16,11 @@ import type.tree.Node;
 public class BloomFilterImpl implements BloomFilter, Serializable {
 
     private BitSet bitSet;
-    double fpr = 0.0000001;
+    double fpr = 0.000001;
+
 
     int size;
+
     int numberOfHashFunc;
 
 
@@ -30,6 +31,8 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
     public BloomFilterImpl(AvlTree avlTree) {
         init(avlTree.getSize());
         addAllValuesFromTree(avlTree);
+
+
     }
 
     private void addAllValuesFromTree(AvlTree avlTree) {
@@ -49,7 +52,7 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
 
     private void init(int maxNumberOfElements) {
 
-        this.size = (int) (maxNumberOfElements * 2 * log(fpr) / -log(pow(2, log(2))));
+        this.size = (int) (maxNumberOfElements * log(fpr) / -log(pow(2, log(2))));
         //this.numberOfHashFunc =  (int) ((size / maxNumberOfElements) * Math.log(2));
         this.numberOfHashFunc = 15;
         this.bitSet = new BitSet(size);
@@ -59,9 +62,9 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
     @Override
     public boolean probablyContains(String object) {
         for (int i = 0; i <= numberOfHashFunc; i++) {
-            long hash32 = Hashing.murmur3_32_fixed(getHashSeed(i)).hashString(object, StandardCharsets.UTF_8).asLong();
-            int i1 = (int) hash32 % size;
-            boolean result = bitSet.get(i);
+            long hash32 = MurmurHash.hash64(object.getBytes(), object.getBytes().length, getHashSeed(i));
+            long i1 = Math.abs(hash32) % size;
+            boolean result = bitSet.get(Math.abs((int) i1) % size);
             if (!result) {
                 return false;
             }
@@ -73,10 +76,9 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
     public void add(String object) {
 
         for (int i = 0; i <= numberOfHashFunc; i++) {
-            long hash32 = Hashing.murmur3_128(getHashSeed(i)).hashString(object, StandardCharsets.UTF_8).asLong();
-
-            int i1 = (int) (hash32 % size);
-            bitSet.set(i1);
+            long hash32 = MurmurHash.hash64(object.getBytes(), object.getBytes().length, getHashSeed(i));
+            long i1 = Math.abs(hash32) % size;
+            bitSet.set((int) i1);
         }
     }
 

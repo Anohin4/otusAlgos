@@ -68,7 +68,7 @@ public class MemTable {
     }
 
     public void getValue(String indexValue, Set<String> result, Set<String> deletedRows) {
-        extractTreeToSet(mainTree, indexValue, result, deletedRows);
+        extractTreeToSet(mainTree, indexValue, result, deletedRows, true);
     }
 
     public void stop() {

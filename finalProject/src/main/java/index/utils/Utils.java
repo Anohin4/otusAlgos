@@ -37,9 +37,15 @@ public class Utils {
         return listOfSeeds.get(number);
     }
 
-    public static void extractTreeToSet(AvlTree tree, String indexToFind, Set<String> result, Set<String> deletedRows) {
+    public static void extractTreeToSet(AvlTree tree, String indexToFind, Set<String> result, Set<String> deletedRows){
+        extractTreeToSet(tree, indexToFind, result, deletedRows, false);
+    }
+    public static void extractTreeToSet(AvlTree tree, String indexToFind, Set<String> result, Set<String> deletedRows, boolean fromMemtable) {
         Optional<RowEntityForBd> value = tree.getValue(indexToFind);
-        value.ifPresentOrElse(elem -> extractRowEntityToResultMaps(result, deletedRows, elem), () -> System.out.println("false positive"));
+        value.ifPresentOrElse(elem -> extractRowEntityToResultMaps(result, deletedRows, elem), () -> {
+            if(!fromMemtable){
+                System.out.println("false positive");
+            }});
     }
 
     private static void extractRowEntityToResultMaps(Set<String> result, Set<String> deleted, RowEntityForBd elem) {
