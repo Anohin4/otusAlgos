@@ -39,7 +39,7 @@ public class Utils {
 
     public static void extractTreeToSet(AvlTree tree, String indexToFind, Set<String> result, Set<String> deletedRows) {
         Optional<RowEntityForBd> value = tree.getValue(indexToFind);
-        value.ifPresent(elem -> extractRowEntityToResultMaps(result, deletedRows, elem));
+        value.ifPresentOrElse(elem -> extractRowEntityToResultMaps(result, deletedRows, elem), () -> System.out.println("false positive"));
     }
 
     private static void extractRowEntityToResultMaps(Set<String> result, Set<String> deleted, RowEntityForBd elem) {

@@ -10,7 +10,4 @@ public interface Writer {
 
     void writeTreeToDisk(AvlTree rowEntity, String fileName) throws IOException;
     void writeBloomFilterToDisk(BloomFilter bloomFilter, String fileName) throws IOException;
-    void clearFile(File file) throws IOException;
-
-    void logEntity(File journal, OperationEnum operation, String key, String value) throws IOException;
 }

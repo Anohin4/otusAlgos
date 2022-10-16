@@ -1,10 +1,13 @@
 package bloomfilter;
 
 import static index.utils.Utils.getHashSeed;
+import static java.lang.Math.log;
+import static java.lang.Math.pow;
 import static java.util.Objects.nonNull;
 
-import index.utils.MurmurHash;
+import com.google.common.hash.Hashing;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -12,8 +15,9 @@ import type.tree.AvlTree;
 import type.tree.Node;
 
 public class BloomFilterImpl implements BloomFilter, Serializable {
+
     private BitSet bitSet;
-    double fpr = 0.001;
+    double fpr = 0.0000001;
 
     int size;
     int numberOfHashFunc;
@@ -44,17 +48,21 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
     }
 
     private void init(int maxNumberOfElements) {
-        this.size = (int) ((maxNumberOfElements * Math.abs(Math.log(fpr))) / (Math.pow(Math.log(2), 2)));
-        this.numberOfHashFunc =  (int) ((size / maxNumberOfElements) * Math.log(2));
+
+        this.size = (int) (maxNumberOfElements * 2 * log(fpr) / -log(pow(2, log(2))));
+        //this.numberOfHashFunc =  (int) ((size / maxNumberOfElements) * Math.log(2));
+        this.numberOfHashFunc = 15;
         this.bitSet = new BitSet(size);
+
     }
 
     @Override
     public boolean probablyContains(String object) {
-        for (int i =0; i <= numberOfHashFunc; i ++) {
-            int hash32 = MurmurHash.hash32(object.getBytes(), object.getBytes().length, getHashSeed(i));
-            boolean result = bitSet.get(Math.abs(hash32)%size);
-            if(!result) {
+        for (int i = 0; i <= numberOfHashFunc; i++) {
+            long hash32 = Hashing.murmur3_32_fixed(getHashSeed(i)).hashString(object, StandardCharsets.UTF_8).asLong();
+            int i1 = (int) hash32 % size;
+            boolean result = bitSet.get(i);
+            if (!result) {
                 return false;
             }
         }
@@ -63,9 +71,12 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
 
     @Override
     public void add(String object) {
-        for (int i =0; i <= numberOfHashFunc; i ++) {
-            int hash32 = MurmurHash.hash32(object.getBytes(), object.getBytes().length, getHashSeed(i));
-            bitSet.set(Math.abs(hash32)%size);
+
+        for (int i = 0; i <= numberOfHashFunc; i++) {
+            long hash32 = Hashing.murmur3_128(getHashSeed(i)).hashString(object, StandardCharsets.UTF_8).asLong();
+
+            int i1 = (int) (hash32 % size);
+            bitSet.set(i1);
         }
     }
 

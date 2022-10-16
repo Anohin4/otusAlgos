@@ -1,10 +1,12 @@
-package index.io;
+package index.service;
 
+import bloomfilter.BloomFilter;
 import index.io.TreeReader;
 import index.io.Writer;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Objects;
+import org.apache.commons.collections4.map.LRUMap;
 
 public abstract class AbstractIOService {
     protected String indexName;
@@ -13,14 +15,16 @@ public abstract class AbstractIOService {
     protected String bloomFilterTemplateName ;
     protected Writer writer;
     protected TreeReader reader;
+    protected LRUMap<String, BloomFilter> bloomFilterCache;
 
-    public AbstractIOService(String indexName, String pathToDir, int maxLvl, Writer writer, TreeReader reader) {
+    public AbstractIOService(String indexName, String pathToDir, int maxLvl, Writer writer, TreeReader reader, LRUMap<String, BloomFilter> bloomFilterCash) {
         this.indexName = indexName;
         this.pathToDir = pathToDir;
         this.maxLvl = maxLvl;
         this.writer = writer;
         this.reader = reader;
         this.bloomFilterTemplateName = indexName + "_blm_";
+        this.bloomFilterCache = bloomFilterCash;
     }
 
     protected boolean checkNextLvl(int currentLvl) {

@@ -1,5 +1,6 @@
 package index;
 
+import bloomfilter.BloomFilter;
 import index.io.TreeReader;
 import index.io.TreeReaderImpl;
 import index.io.Writer;
@@ -12,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.map.LRUMap;
 import type.OperationEnum;
 import type.RowEntity;
 
@@ -25,6 +27,7 @@ public class Index {
     private final TreeReader treeReader;
     private final MergeService service;
     private final SearchService searchService;
+    private final LRUMap<String, BloomFilter> bloomFilterCache;
 
     public String getName() {
         return name;
@@ -42,9 +45,9 @@ public class Index {
         this.treeReader = new TreeReaderImpl();
         this.memTableMax = 50000;
         this.memTable = new MemTable(path, name, treeReader, memTableMax);
-
-        this.service = new MergeService(writer, treeReader, name, pathToDir, maxLvl);
-        this.searchService = new SearchService(writer, treeReader, name, pathToDir, maxLvl);
+        this.bloomFilterCache = new LRUMap<>(50);
+        this.service = new MergeService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
+        this.searchService = new SearchService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
 
     }
     public Index(String name, String path, int maxLvl) throws IOException{
@@ -58,9 +61,10 @@ public class Index {
         this.writer = new WriterImpl();
         this.treeReader = new TreeReaderImpl();
         this.memTableMax = 50000;
+        this.bloomFilterCache = new LRUMap<>(50);
         this.memTable = new MemTable(path, name, treeReader, memTableMax);
-        this.service = new MergeService(writer, treeReader, name, pathToDir, maxLvl);
-        this.searchService = new SearchService(writer, treeReader, name, pathToDir, maxLvl);
+        this.service = new MergeService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
+        this.searchService = new SearchService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
 
     }
 
@@ -75,9 +79,11 @@ public class Index {
         this.writer = new WriterImpl();
         this.treeReader = new TreeReaderImpl();
         this.memTableMax = 50000;
+        this.bloomFilterCache = new LRUMap<>(50);
         this.memTable = new MemTable(path, name, treeReader, memTableMax);
-        this.service = new MergeService(writer, treeReader, name, pathToDir, maxLvl);
-        this.searchService = new SearchService(writer, treeReader, name, pathToDir, maxLvl);
+        this.service = new MergeService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
+        this.searchService = new SearchService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
+
 
     }
 
@@ -101,6 +107,11 @@ public class Index {
         //writer.clearFile(memTable.getJournal());
         memTable.clearMemTable();
     }
+
+    public void stop() {
+        memTable.stop();
+    }
+
 
 
 

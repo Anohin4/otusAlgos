@@ -2,10 +2,13 @@ package index;
 
 import static index.utils.Utils.extractTreeToSet;
 
+import index.io.JournalWriter;
 import index.io.TreeReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import type.JournalEntity;
 import type.OperationEnum;
 import type.RowEntity;
 import type.tree.AvlTree;
@@ -16,29 +19,31 @@ public class MemTable {
     private File journal;
 
     private int memTableThreshold;
-
-    public MemTable(AvlTree mainTree) {
-        this.mainTree = mainTree;
-    }
+    private ConcurrentLinkedQueue<JournalEntity> journalQueue;
+    private JournalWriter journalWriter;
 
     public MemTable(String pathToDir, String name, TreeReader reader, int memTableThreshold) throws IOException {
         this.memTableThreshold = memTableThreshold;
-        this.journal = new File(pathToDir  + File.separator + name + "Journal.txt");
+        this.journal = new File(pathToDir + File.separator + name + "Journal.txt");
         if (journal.exists()) {
             this.mainTree = reader.readTreeForJournal(journal);
         } else {
             journal.createNewFile();
             this.mainTree = new AvlTree();
-
         }
+        this.journalQueue = new ConcurrentLinkedQueue<>();
+        this.journalWriter = new JournalWriter(journalQueue, journal);
+        Thread thread = new Thread(journalWriter);
+        thread.start();
     }
 
     public int getSize() {
         return mainTree.getSize();
     }
 
-    public synchronized void addValue(OperationEnum operation, String key, String value) throws IOException {
+    public void addValue(OperationEnum operation, String key, String value) throws IOException {
         RowEntity rowEntity = new RowEntity(key, value);
+        journalQueue.add(new JournalEntity(operation, key, value));
         if (operation.equals(OperationEnum.DELETE)) {
             rowEntity = new RowEntity(key, value, true);
         }
@@ -57,11 +62,16 @@ public class MemTable {
         return mainTree;
     }
 
-    public void clearMemTable() {
+    public void clearMemTable() throws IOException {
         this.mainTree = new AvlTree();
+        journalWriter.clearFile();
     }
 
     public void getValue(String indexValue, Set<String> result, Set<String> deletedRows) {
         extractTreeToSet(mainTree, indexValue, result, deletedRows);
+    }
+
+    public void stop() {
+        journalWriter.stop();
     }
 }

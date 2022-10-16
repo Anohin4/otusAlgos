@@ -4,20 +4,21 @@ import static java.util.Objects.nonNull;
 
 import bloomfilter.BloomFilter;
 import bloomfilter.BloomFilterImpl;
-import index.io.AbstractIOService;
 import index.io.TreeReader;
 import index.io.Writer;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
+import org.apache.commons.collections4.map.LRUMap;
 import type.tree.AvlTree;
 import type.tree.Node;
 
 public class MergeService  extends AbstractIOService {
 
-    public MergeService(Writer writer, TreeReader reader, String indexName, String pathToDir, int maxLvl) {
-        super(indexName, pathToDir, maxLvl, writer, reader);
+    public MergeService(Writer writer, TreeReader reader, String indexName, String pathToDir, int maxLvl,
+            LRUMap<String, BloomFilter> bloomFilterCache) {
+        super(indexName, pathToDir, maxLvl, writer, reader, bloomFilterCache);
 
     }
 
@@ -46,8 +47,12 @@ public class MergeService  extends AbstractIOService {
     private void writeTree(AvlTree treeToFlush, int currentLvl, int numberOfFile) throws IOException {
         writer.writeTreeToDisk(treeToFlush, pathToDir+ File.separator  + indexName + getLvlTemplate(currentLvl) + numberOfFile);
         BloomFilter bloomFilter = new BloomFilterImpl(treeToFlush);
+        String filterName = pathToDir + File.separator + bloomFilterTemplateName + getLvlTemplate(currentLvl) + numberOfFile;
+        if(currentLvl == maxLvl) {
+            bloomFilterCache.put(filterName, bloomFilter);
+        }
         writer.writeBloomFilterToDisk(bloomFilter,
-                pathToDir + File.separator + bloomFilterTemplateName + getLvlTemplate(currentLvl) + numberOfFile);
+                filterName);
     }
 
     public void mergeTrees(AvlTree treeFromFile, AvlTree newerTree) {
