@@ -4,7 +4,7 @@ import static index.utils.Utils.COLUMN_SEPARATOR;
 import static java.util.Objects.nonNull;
 
 import bloomfilter.BloomFilter;
-import index.OperationEnum;
+import type.OperationEnum;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,7 +25,6 @@ public class WriterImpl implements Writer {
         Node rootNode = tree.getRootNode();
         Queue<Node> queue = new LinkedList<>();
         queue.add(rootNode);
-        //todo поменять файл
         File fileToWrite = new File(fileName);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite))) {
             while (!queue.isEmpty()) {

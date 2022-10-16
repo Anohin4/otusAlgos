@@ -1,7 +1,7 @@
 package index.io;
 
 import bloomfilter.BloomFilter;
-import index.OperationEnum;
+import type.OperationEnum;
 import java.io.File;
 import java.io.IOException;
 import type.tree.AvlTree;

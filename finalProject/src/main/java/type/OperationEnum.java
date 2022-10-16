@@ -1,4 +1,4 @@
-package index;
+package type;
 
 public enum OperationEnum {
     INSERT("INSERT"), DELETE("DELETE");

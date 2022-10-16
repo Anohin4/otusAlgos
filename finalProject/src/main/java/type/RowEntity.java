@@ -1,4 +1,4 @@
-package index;
+package type;
 
 public class RowEntity {
     private String rowId;

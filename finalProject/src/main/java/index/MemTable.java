@@ -5,12 +5,10 @@ import static index.utils.Utils.extractTreeToSet;
 import index.io.TreeReader;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
+import type.OperationEnum;
+import type.RowEntity;
 import type.tree.AvlTree;
-import type.tree.RowEntityForBd;
 
 public class MemTable {
 
@@ -23,8 +21,8 @@ public class MemTable {
         this.mainTree = mainTree;
     }
 
-    public MemTable(String pathToDir, String name, TreeReader reader) throws IOException {
-        this.memTableThreshold = 50000;
+    public MemTable(String pathToDir, String name, TreeReader reader, int memTableThreshold) throws IOException {
+        this.memTableThreshold = memTableThreshold;
         this.journal = new File(pathToDir  + File.separator + name + "Journal.txt");
         if (journal.exists()) {
             this.mainTree = reader.readTreeForJournal(journal);

@@ -1,19 +1,14 @@
-package index;
+package index.service;
 
 import static index.utils.Utils.extractTreeToSet;
 
 import bloomfilter.BloomFilter;
+import index.io.AbstractIOService;
 import index.io.TreeReader;
 import index.io.Writer;
 import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import type.tree.AvlTree;
-import type.tree.RowEntityForBd;
-import type.tree.RowId;
 
 public class SearchService extends AbstractIOService {
     public SearchService(Writer writer, TreeReader reader, String indexName, String pathToDir, int maxLvl) {

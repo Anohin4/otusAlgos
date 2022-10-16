@@ -11,8 +11,14 @@ public class RowId {
     }
 
     public RowId(String rowId) {
-        this.rowId = rowId;
-        this.isTombStone = false;
+        if (rowId.endsWith("_D")) {
+            this.isTombStone = true;
+            this.rowId = rowId.substring(0,rowId.length() - 2);
+        } else {
+            this.isTombStone = false;
+            this.rowId = rowId;
+        }
+
     }
 
     public String getRowId() {

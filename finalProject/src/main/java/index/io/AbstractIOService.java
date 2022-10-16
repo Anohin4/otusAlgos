@@ -1,4 +1,4 @@
-package index;
+package index.io;
 
 import index.io.TreeReader;
 import index.io.Writer;

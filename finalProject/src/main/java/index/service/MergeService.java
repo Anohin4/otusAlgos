@@ -1,28 +1,24 @@
-package index;
+package index.service;
 
 import static java.util.Objects.nonNull;
 
 import bloomfilter.BloomFilter;
 import bloomfilter.BloomFilterImpl;
+import index.io.AbstractIOService;
 import index.io.TreeReader;
 import index.io.Writer;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.Objects;
 import java.util.Queue;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import type.tree.AvlTree;
 import type.tree.Node;
 
 public class MergeService  extends AbstractIOService {
-    long timer;
+
     public MergeService(Writer writer, TreeReader reader, String indexName, String pathToDir, int maxLvl) {
         super(indexName, pathToDir, maxLvl, writer, reader);
 
-        this.timer = System.currentTimeMillis();
     }
 
     public void rollingMerge(AvlTree treeToFlush) throws IOException {
@@ -33,7 +29,6 @@ public class MergeService  extends AbstractIOService {
         if (count < 9) {
             writeTree(treeToFlush, lvl, count);
         } else {
-            System.out.println(System.currentTimeMillis() - timer);
             //иначе мерджим последовательно
             //для этого проходим по всем уровням, которые надо будет с мерджить (те, где количество файлов = 9)
             //все эти деревья последовательно сливаем в одно дерево, не нарушая порядка добавления
