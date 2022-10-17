@@ -8,13 +8,14 @@ import index.io.Writer;
 import java.io.File;
 import java.util.Set;
 import org.apache.commons.collections4.map.LRUMap;
+import type.MetaInfo;
 import type.tree.AvlTree;
 
 public class SearchService extends AbstractIOService {
 
-    public SearchService(Writer writer, TreeReader reader, String indexName, String pathToDir, int maxLvl,
-            LRUMap<String, BloomFilter> bloomFilterCache) {
-        super(indexName, pathToDir, maxLvl, writer, reader, bloomFilterCache);
+    public SearchService(String indexName, String pathToDir, int maxLvl,
+            LRUMap<String, BloomFilter> bloomFilterCache, MetaInfo metaInfo) {
+        super(indexName, pathToDir, maxLvl, bloomFilterCache, metaInfo);
     }
 
     public Set<String> findEntities(String indexValue, Set<String> result, Set<String> deleted) throws Exception {
@@ -34,7 +35,6 @@ public class SearchService extends AbstractIOService {
                 if (bloomFilterCache.containsKey(bloomFilterName)) {
                     bloomFilter = bloomFilterCache.get(bloomFilterName);
                 } else {
-                    System.out.println("not in cache");
                     bloomFilter = reader.readBloomFilterFromDisk(
                             bloomFilterName);
                     //если кэш не полный - закидываем, что прочли, лишним не будет

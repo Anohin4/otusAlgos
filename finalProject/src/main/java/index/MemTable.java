@@ -4,6 +4,7 @@ import static index.utils.Utils.extractTreeToSet;
 
 import index.io.JournalWriter;
 import index.io.TreeReader;
+import index.io.TreeReaderImpl;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
@@ -22,19 +23,24 @@ public class MemTable {
     private ConcurrentLinkedQueue<JournalEntity> journalQueue;
     private JournalWriter journalWriter;
 
-    public MemTable(String pathToDir, String name, TreeReader reader, int memTableThreshold) throws IOException {
+    public MemTable(String pathToDir, String name,  int memTableThreshold) throws IOException {
         this.memTableThreshold = memTableThreshold;
         this.journal = new File(pathToDir + File.separator + name + "Journal.txt");
+        initiateJournal();
+        this.journalQueue = new ConcurrentLinkedQueue<>();
+        this.journalWriter = new JournalWriter(journalQueue, journal);
+        Thread thread = new Thread(journalWriter);
+        thread.start();
+    }
+
+    private void initiateJournal() throws IOException {
+        TreeReader reader = new TreeReaderImpl();
         if (journal.exists()) {
             this.mainTree = reader.readTreeForJournal(journal);
         } else {
             journal.createNewFile();
             this.mainTree = new AvlTree();
         }
-        this.journalQueue = new ConcurrentLinkedQueue<>();
-        this.journalWriter = new JournalWriter(journalQueue, journal);
-        Thread thread = new Thread(journalWriter);
-        thread.start();
     }
 
     public int getSize() {

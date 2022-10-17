@@ -2,10 +2,13 @@ package index.service;
 
 import bloomfilter.BloomFilter;
 import index.io.TreeReader;
+import index.io.TreeReaderImpl;
 import index.io.Writer;
+import index.io.WriterImpl;
 import java.io.File;
 import java.util.Objects;
 import org.apache.commons.collections4.map.LRUMap;
+import type.MetaInfo;
 
 public abstract class AbstractIOService {
 
@@ -16,16 +19,18 @@ public abstract class AbstractIOService {
     protected Writer writer;
     protected TreeReader reader;
     protected LRUMap<String, BloomFilter> bloomFilterCache;
+    protected MetaInfo metaInfo;
 
-    public AbstractIOService(String indexName, String pathToDir, int maxLvl, Writer writer, TreeReader reader,
-            LRUMap<String, BloomFilter> bloomFilterCash) {
+    public AbstractIOService(String indexName, String pathToDir, int maxLvl,
+            LRUMap<String, BloomFilter> bloomFilterCash, MetaInfo metaInfo) {
         this.indexName = indexName;
         this.pathToDir = pathToDir;
         this.maxLvl = maxLvl;
-        this.writer = writer;
-        this.reader = reader;
+        this.writer = new WriterImpl();
+        this.reader = new TreeReaderImpl();
         this.bloomFilterTemplateName = indexName + "_blm_";
         this.bloomFilterCache = bloomFilterCash;
+        this.metaInfo = metaInfo;
     }
 
     protected boolean checkNextLvl(int currentLvl) {
@@ -38,15 +43,7 @@ public abstract class AbstractIOService {
 
 
     protected int getNumberOfFilesThatLvl(int lvl) {
-        File dir = new File(pathToDir);
-        String nameTemplate = indexName + getLvlTemplate(lvl);
-        if (!dir.exists()) {
-            throw new RuntimeException("Нет директории");
-        }
-        int length = Objects.requireNonNull(
-                dir.listFiles((dir1, name) -> name.contains(nameTemplate))).length;
-        //находим количество файлов этого уровня
-        return length;
+        return metaInfo.getNumberOfFilesThatLvl(lvl);
     }
 
 }

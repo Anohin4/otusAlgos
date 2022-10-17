@@ -1,96 +1,86 @@
 package index;
 
 import bloomfilter.BloomFilter;
-import index.io.TreeReader;
-import index.io.TreeReaderImpl;
-import index.io.Writer;
-import index.io.WriterImpl;
 import index.service.MergeService;
 import index.service.SearchService;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.map.LRUMap;
+import type.MetaInfo;
 import type.OperationEnum;
 import type.RowEntity;
 
 public class Index {
 
-    private final String name;
     private final String pathToDir;
+    private MetaInfo metaInfo;
     private int maxLvl;
     private int memTableMax;
     private final MemTable memTable;
-    private final Writer writer;
-    private final TreeReader treeReader;
     private final MergeService service;
     private final SearchService searchService;
     private final LRUMap<String, BloomFilter> bloomFilterCache;
 
     public String getName() {
-        return name;
+        return metaInfo.getName();
     }
 
     public Index(String name, String path) throws IOException {
-        File dir = new File(path);
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-        this.name = name;
         this.maxLvl = 3;
         this.pathToDir = path;
-        this.writer = new WriterImpl();
-        this.treeReader = new TreeReaderImpl();
+        ioInit(path, name);
         this.memTableMax = 50000;
-        this.memTable = new MemTable(path, name, treeReader, memTableMax);
+        this.memTable = new MemTable(path, name, memTableMax);
         this.bloomFilterCache = new LRUMap<>(50);
-        this.service = new MergeService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
-        this.searchService = new SearchService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
-
-    }
-
-    public Index(String name, String path, int maxLvl) throws IOException {
-        File dir = new File(path);
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-        this.name = name;
-        this.maxLvl = maxLvl;
-        this.pathToDir = path;
-        this.writer = new WriterImpl();
-        this.treeReader = new TreeReaderImpl();
-        this.memTableMax = 50000;
-        this.bloomFilterCache = new LRUMap<>(50);
-        this.memTable = new MemTable(path, name, treeReader, memTableMax);
-        this.service = new MergeService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
-        this.searchService = new SearchService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
-
+        this.service = new MergeService(name, pathToDir, maxLvl, bloomFilterCache, metaInfo);
+        this.searchService = new SearchService(name, pathToDir, maxLvl, bloomFilterCache, metaInfo);
+        this.metaInfo = new MetaInfo(name, maxLvl);
     }
 
     public Index(String name, String path, int maxLvl, int memTableMax) throws IOException {
+
+        this.maxLvl = maxLvl;
+
+        this.pathToDir = path;
+        ioInit(path, name);
+        this.memTableMax = 50000;
+        this.bloomFilterCache = new LRUMap<>(50);
+        this.memTable = new MemTable(path, name, memTableMax);
+        this.service = new MergeService(name, pathToDir, maxLvl, bloomFilterCache, metaInfo);
+        this.searchService = new SearchService(name, pathToDir, maxLvl, bloomFilterCache, metaInfo);
+        this.metaInfo = new MetaInfo(name, maxLvl);
+
+    }
+
+    private void ioInit(String path, String name) throws FileNotFoundException {
         File dir = new File(path);
         if (!dir.exists()) {
             dir.mkdir();
         }
-        this.name = name;
-        this.maxLvl = maxLvl;
-        this.pathToDir = path;
-        this.writer = new WriterImpl();
-        this.treeReader = new TreeReaderImpl();
-        this.memTableMax = 50000;
-        this.bloomFilterCache = new LRUMap<>(50);
-        this.memTable = new MemTable(path, name, treeReader, memTableMax);
-        this.service = new MergeService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
-        this.searchService = new SearchService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
 
-
+        File metaFile = new File(path + File.separator + name + "_meta");
+        if (metaFile.exists()) {
+            try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(metaFile))) {
+                this.metaInfo = (MetaInfo) objectInputStream.readObject();
+                this.maxLvl = metaInfo.getMaxLvl();
+                System.out.println("123434324234234");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else  {
+            this.metaInfo = new MetaInfo(name, maxLvl);
+            metaInfo.writeInfoToDisk(pathToDir);
+        }
     }
 
     public void insert(OperationEnum operation, String key, String value) throws IOException {
-        //writer.logEntity(memTable.getJournal(), operation, key, value);
         memTable.addValue(operation, key, value);
         if (memTable.isFull()) {
             flushMemTableToDisk();
@@ -107,8 +97,8 @@ public class Index {
 
     private void flushMemTableToDisk() throws IOException {
         service.rollingMerge(memTable.getMainTree());
-        //writer.clearFile(memTable.getJournal());
         memTable.clearMemTable();
+
     }
 
     public void stop() {

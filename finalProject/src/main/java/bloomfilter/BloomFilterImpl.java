@@ -53,8 +53,8 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
     private void init(int maxNumberOfElements) {
 
         this.size = (int) (maxNumberOfElements * log(fpr) / -log(pow(2, log(2))));
-        //this.numberOfHashFunc =  (int) ((size / maxNumberOfElements) * Math.log(2));
-        this.numberOfHashFunc = 15;
+        this.numberOfHashFunc =  (int) ((size / maxNumberOfElements) * Math.log(2));
+        //this.numberOfHashFunc = 15;
         this.bitSet = new BitSet(size);
 
     }
@@ -74,7 +74,6 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
 
     @Override
     public void add(String object) {
-
         for (int i = 0; i <= numberOfHashFunc; i++) {
             long hash32 = MurmurHash.hash64(object.getBytes(), object.getBytes().length, getHashSeed(i));
             long i1 = Math.abs(hash32) % size;
