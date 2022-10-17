@@ -4,20 +4,21 @@ import bloomfilter.BloomFilter;
 import index.io.TreeReader;
 import index.io.Writer;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Objects;
 import org.apache.commons.collections4.map.LRUMap;
 
 public abstract class AbstractIOService {
+
     protected String indexName;
     protected String pathToDir;
     protected int maxLvl;
-    protected String bloomFilterTemplateName ;
+    protected String bloomFilterTemplateName;
     protected Writer writer;
     protected TreeReader reader;
     protected LRUMap<String, BloomFilter> bloomFilterCache;
 
-    public AbstractIOService(String indexName, String pathToDir, int maxLvl, Writer writer, TreeReader reader, LRUMap<String, BloomFilter> bloomFilterCash) {
+    public AbstractIOService(String indexName, String pathToDir, int maxLvl, Writer writer, TreeReader reader,
+            LRUMap<String, BloomFilter> bloomFilterCash) {
         this.indexName = indexName;
         this.pathToDir = pathToDir;
         this.maxLvl = maxLvl;
@@ -29,19 +30,6 @@ public abstract class AbstractIOService {
 
     protected boolean checkNextLvl(int currentLvl) {
         return currentLvl != maxLvl && getNumberOfFilesThatLvl(currentLvl + 1) == 10;
-    }
-
-
-    protected void removeObsoleteFiles(int lvl) {
-        lvl--;
-        File dir = new File(pathToDir);
-        while (lvl > 0) {
-            final int lvlToDelete = lvl;
-            File[] files = dir.listFiles((dir1, name) -> name.startsWith(indexName + getLvlTemplate(lvlToDelete))
-                    || name.startsWith(bloomFilterTemplateName + getLvlTemplate(lvlToDelete)));
-            Arrays.stream(files).forEach(File::delete);
-            lvl--;
-        }
     }
 
     protected String getLvlTemplate(int lvl) {

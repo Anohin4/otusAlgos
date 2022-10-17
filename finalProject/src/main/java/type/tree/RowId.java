@@ -13,7 +13,7 @@ public class RowId {
     public RowId(String rowId) {
         if (rowId.endsWith("_D")) {
             this.isTombStone = true;
-            this.rowId = rowId.substring(0,rowId.length() - 2);
+            this.rowId = rowId.substring(0, rowId.length() - 2);
         } else {
             this.isTombStone = false;
             this.rowId = rowId;

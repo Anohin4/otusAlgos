@@ -1,6 +1,7 @@
 package type;
 
 public class RowEntity {
+
     private String rowId;
     private String indexValue;
     private Boolean deleted;
@@ -16,12 +17,13 @@ public class RowEntity {
         this.indexValue = indexValue;
         this.deleted = deleted;
     }
+
     public RowEntity(String indexValue, String rowId, OperationEnum deleted) {
         this.rowId = rowId;
         this.indexValue = indexValue;
         if (deleted == OperationEnum.DELETE) {
             this.deleted = true;
-        } else  {
+        } else {
             this.deleted = false;
         }
     }
@@ -50,6 +52,6 @@ public class RowEntity {
     public String toString() {
         return "RowEntity " +
 
-                "indexValue='" + indexValue + '\'' + "," + "rowId='" + rowId ;
+                "indexValue='" + indexValue + '\'' + "," + "rowId='" + rowId;
     }
 }

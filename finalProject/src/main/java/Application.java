@@ -1,64 +1,13 @@
-import bloomfilter.BloomFilter;
-import bloomfilter.BloomFilterImpl;
 import index.Index;
-import index.io.TreeReaderImpl;
-import java.io.File;
-import java.io.IOException;
-import java.util.BitSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import type.OperationEnum;
-import type.RowEntity;
-import type.tree.AvlTree;
-import type.tree.RowEntityForBd;
 
 public class Application {
 
     public static void main(String[] args) throws Exception {
-      Index smalLevel = indexInsertTest("smalLevel", 2, 50000);
-        //Index smalLevel = new Index("smalLevel","/Users/enanohin/IdeaProjects/otusAlgos/finalProject/testindex2",2, 50000);
-        //System.out.println(smalLevel.getData("123"));
-        search5ElemTest(smalLevel);
-        smalLevel.stop();
-
-//        BloomFilter bloomFilter = new TreeReaderImpl().readBloomFilterFromDisk(
-//                "/Users/enanohin/IdeaProjects/otusAlgos/finalProject/testindex2/smalLevel_blm__L2_0");
-//        AvlTree avlTree = new TreeReaderImpl().readTreeFromFile(
-//                new File("/Users/enanohin/IdeaProjects/otusAlgos/finalProject/testindex2/smalLevel_L2_0"));
-//
-//        BloomFilterImpl bloomFilter1 = new BloomFilterImpl(avlTree);
-//
-//        int i = 0;
-//        int counter = 0;
-//        while (i < 1000) {
-//            String s = String.valueOf(new Random().nextInt());
-//            if(bloomFilter.probablyContains(s)) {
-//                Optional<RowEntityForBd> value = avlTree.getValue(s);
-//                if(value.isEmpty()) {
-//                    counter++;
-//                }
-//            }
-//            i++;
-//        }
-//        int j = 0;
-//        int counter2 = 0;
-//        while (j < 1000) {
-//            String s = String.valueOf(new Random().nextInt());
-//            if(bloomFilter1.probablyContains(s)) {
-//                Optional<RowEntityForBd> value = avlTree.getValue(s);
-//                if(value.isEmpty()) {
-//                    counter2++;
-//                }
-//            }
-//            j++;
-//        }
-//
-//
-//        System.out.println(counter);
-//        System.out.println(counter2);
-
-
+        Index index = indexInsertTest("smalLevel", 2, 50000);
+        searchTest(index);
+        index.stop();
     }
 
     private static Index indexInsertTest(String indexName, int maxLvl, int memTableMax) throws Exception {
@@ -91,7 +40,7 @@ public class Application {
 
     }
 
-    private static void search5ElemTest(Index test) throws Exception {
+    private static void searchTest(Index test) throws Exception {
         System.out.println("start search test");
         long start = System.currentTimeMillis();
         int i = 0;

@@ -8,13 +8,14 @@ import index.io.TreeReader;
 import index.io.Writer;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import org.apache.commons.collections4.map.LRUMap;
 import type.tree.AvlTree;
 import type.tree.Node;
 
-public class MergeService  extends AbstractIOService {
+public class MergeService extends AbstractIOService {
 
     public MergeService(Writer writer, TreeReader reader, String indexName, String pathToDir, int maxLvl,
             LRUMap<String, BloomFilter> bloomFilterCache) {
@@ -45,14 +46,17 @@ public class MergeService  extends AbstractIOService {
     }
 
     private void writeTree(AvlTree treeToFlush, int currentLvl, int numberOfFile) throws IOException {
-        writer.writeTreeToDisk(treeToFlush, pathToDir+ File.separator  + indexName + getLvlTemplate(currentLvl) + numberOfFile);
+        writer.writeTreeToDisk(treeToFlush,
+                pathToDir + File.separator + indexName + getLvlTemplate(currentLvl) + numberOfFile);
         BloomFilter bloomFilter = new BloomFilterImpl(treeToFlush);
-        String filterName = pathToDir + File.separator + bloomFilterTemplateName + getLvlTemplate(currentLvl) + numberOfFile;
-        if(currentLvl == maxLvl) {
+        String filterName =
+                pathToDir + File.separator + bloomFilterTemplateName + getLvlTemplate(currentLvl) + numberOfFile;
+        if (!bloomFilterCache.isFull()) {
             bloomFilterCache.put(filterName, bloomFilter);
         }
         writer.writeBloomFilterToDisk(bloomFilter,
                 filterName);
+
     }
 
     public void mergeTrees(AvlTree treeFromFile, AvlTree newerTree) {
@@ -71,15 +75,15 @@ public class MergeService  extends AbstractIOService {
     }
 
 
-
     private boolean prepareTreeToMerge(int currentLvl, AvlTree treeToFlush) throws IOException {
         String nameTemplate = indexName + getLvlTemplate(currentLvl);
-        AvlTree resultTree = reader.readTreeFromFile(new File(pathToDir+ File.separator +nameTemplate + 0));
+        AvlTree resultTree = reader.readTreeFromFile(new File(pathToDir + File.separator + nameTemplate + 0));
 
         //читаем все деревья и мердим их по возрастанию даты обновлений
         int currentTree = 1;
         while (currentTree < 9) {
-            mergeTrees(resultTree, reader.readTreeFromFile(new File(pathToDir+ File.separator +nameTemplate + currentTree)));
+            mergeTrees(resultTree,
+                    reader.readTreeFromFile(new File(pathToDir + File.separator + nameTemplate + currentTree)));
             currentTree++;
         }
 
@@ -92,6 +96,24 @@ public class MergeService  extends AbstractIOService {
 
         //проверяем, нужен ли мердж на уровне ниже
         return checkNextLvl(currentLvl);
+    }
+
+
+    protected void removeObsoleteFiles(int lvl) {
+        lvl--;
+        File dir = new File(pathToDir);
+        while (lvl > 0) {
+            final int lvlToDelete = lvl;
+            File[] files = dir.listFiles((dir1, name) -> name.startsWith(indexName + getLvlTemplate(lvlToDelete))
+                    || name.startsWith(bloomFilterTemplateName + getLvlTemplate(lvlToDelete)));
+            if(nonNull(files)) {
+                Arrays.stream(files).forEach(elem -> {
+                    bloomFilterCache.remove(elem.getName());
+                    elem.delete();
+                });
+            }
+            lvl--;
+        }
     }
 
 }

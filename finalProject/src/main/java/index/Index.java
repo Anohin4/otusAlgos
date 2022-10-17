@@ -18,6 +18,7 @@ import type.OperationEnum;
 import type.RowEntity;
 
 public class Index {
+
     private final String name;
     private final String pathToDir;
     private int maxLvl;
@@ -33,9 +34,9 @@ public class Index {
         return name;
     }
 
-    public Index(String name, String path) throws IOException{
+    public Index(String name, String path) throws IOException {
         File dir = new File(path);
-        if(!dir.exists()) {
+        if (!dir.exists()) {
             dir.mkdir();
         }
         this.name = name;
@@ -50,9 +51,10 @@ public class Index {
         this.searchService = new SearchService(writer, treeReader, name, pathToDir, maxLvl, bloomFilterCache);
 
     }
-    public Index(String name, String path, int maxLvl) throws IOException{
+
+    public Index(String name, String path, int maxLvl) throws IOException {
         File dir = new File(path);
-        if(!dir.exists()) {
+        if (!dir.exists()) {
             dir.mkdir();
         }
         this.name = name;
@@ -68,9 +70,9 @@ public class Index {
 
     }
 
-    public Index(String name, String path, int maxLvl, int memTableMax) throws IOException{
+    public Index(String name, String path, int maxLvl, int memTableMax) throws IOException {
         File dir = new File(path);
-        if(!dir.exists()) {
+        if (!dir.exists()) {
             dir.mkdir();
         }
         this.name = name;
@@ -90,11 +92,12 @@ public class Index {
     public void insert(OperationEnum operation, String key, String value) throws IOException {
         //writer.logEntity(memTable.getJournal(), operation, key, value);
         memTable.addValue(operation, key, value);
-        if(memTable.isFull()) {
+        if (memTable.isFull()) {
             flushMemTableToDisk();
         }
     }
-    public List<RowEntity> getData(String indexValue) throws Exception{
+
+    public List<RowEntity> getData(String indexValue) throws Exception {
         Set<String> result = new HashSet<>();
         Set<String> deletedRows = new HashSet<>();
         memTable.getValue(indexValue, result, deletedRows);
@@ -111,9 +114,6 @@ public class Index {
     public void stop() {
         memTable.stop();
     }
-
-
-
 
 
 }

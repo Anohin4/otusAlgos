@@ -3,10 +3,10 @@ package type.tree;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-import type.RowEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import type.RowEntity;
 
 /*
 Простое дерево, без оптимизаций

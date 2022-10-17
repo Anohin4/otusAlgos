@@ -43,7 +43,7 @@ public class TreeReaderImpl implements TreeReader {
     @Override
     public BloomFilter readBloomFilterFromDisk(String fileName) throws IOException, ClassNotFoundException {
         BloomFilterImpl result;
-        try(ObjectInputStream outputStream = new ObjectInputStream(new FileInputStream(fileName))) {
+        try (ObjectInputStream outputStream = new ObjectInputStream(new FileInputStream(fileName))) {
             result = (BloomFilterImpl) outputStream.readObject();
         }
         return result;

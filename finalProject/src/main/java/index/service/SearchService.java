@@ -11,11 +11,13 @@ import org.apache.commons.collections4.map.LRUMap;
 import type.tree.AvlTree;
 
 public class SearchService extends AbstractIOService {
+
     public SearchService(Writer writer, TreeReader reader, String indexName, String pathToDir, int maxLvl,
             LRUMap<String, BloomFilter> bloomFilterCache) {
-        super(indexName, pathToDir, maxLvl, writer, reader,bloomFilterCache);
+        super(indexName, pathToDir, maxLvl, writer, reader, bloomFilterCache);
     }
-    public Set<String> findEntities(String indexValue, Set<String> result , Set<String> deleted) throws Exception {
+
+    public Set<String> findEntities(String indexValue, Set<String> result, Set<String> deleted) throws Exception {
         int currentLvl = 1;
         while (currentLvl <= maxLvl) {
 
@@ -23,19 +25,24 @@ public class SearchService extends AbstractIOService {
             numberOfFilesThatLvl--;
 
             while (numberOfFilesThatLvl >= 0) {
-                String bloomFilterName = pathToDir + File.separator + bloomFilterTemplateName + getLvlTemplate(currentLvl)
-                        + numberOfFilesThatLvl;
+                String bloomFilterName =
+                        pathToDir + File.separator + bloomFilterTemplateName + getLvlTemplate(currentLvl)
+                                + numberOfFilesThatLvl;
                 String fileName =
                         pathToDir + File.separator + indexName + getLvlTemplate(currentLvl) + numberOfFilesThatLvl;
                 BloomFilter bloomFilter;
-                if(bloomFilterCache.containsKey(bloomFilterName)) {
+                if (bloomFilterCache.containsKey(bloomFilterName)) {
                     bloomFilter = bloomFilterCache.get(bloomFilterName);
-                }else {
+                } else {
+                    System.out.println("not in cache");
                     bloomFilter = reader.readBloomFilterFromDisk(
                             bloomFilterName);
-                    bloomFilterCache.put(bloomFilterName, bloomFilter);
+                    //если кэш не полный - закидываем, что прочли, лишним не будет
+                    if (!bloomFilterCache.isFull()) {
+                        bloomFilterCache.put(bloomFilterName, bloomFilter);
+                    }
                 }
-                if(bloomFilter.probablyContains(indexValue)) {
+                if (bloomFilter.probablyContains(indexValue)) {
 
                     AvlTree avlTree = reader.readTreeFromFile(
                             new File(fileName));

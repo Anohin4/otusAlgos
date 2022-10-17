@@ -3,11 +3,6 @@ package type.tree;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
-
 public class AvlTree extends BinaryTree {
 
     public AvlTree() {
