@@ -70,7 +70,6 @@ public class Index {
             try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(metaFile))) {
                 this.metaInfo = (MetaInfo) objectInputStream.readObject();
                 this.maxLvl = metaInfo.getMaxLvl();
-                System.out.println("123434324234234");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
