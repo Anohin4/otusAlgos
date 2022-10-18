@@ -1,6 +1,7 @@
 package index;
 
 import bloomfilter.BloomFilter;
+import bloomfilter.BloomFilterImpl;
 import index.service.MergeService;
 import index.service.SearchService;
 import java.io.File;
@@ -26,6 +27,7 @@ public class Index {
     private final MemTable memTable;
     private final MergeService service;
     private final SearchService searchService;
+    private BloomFilter masterBloomFilter;
     private final LRUMap<String, BloomFilter> bloomFilterCache;
 
     public String getName() {
@@ -33,14 +35,15 @@ public class Index {
     }
 
     public Index(String name, String path) throws IOException {
+
         this.maxLvl = 3;
         this.pathToDir = path;
         ioInit(path, name);
         this.memTableMax = 50000;
         this.memTable = new MemTable(path, name, memTableMax);
         this.bloomFilterCache = new LRUMap<>(50);
-        this.service = new MergeService(name, pathToDir, maxLvl, bloomFilterCache, metaInfo);
-        this.searchService = new SearchService(name, pathToDir, maxLvl, bloomFilterCache, metaInfo);
+        this.service = new MergeService(name, pathToDir, maxLvl, bloomFilterCache, metaInfo, masterBloomFilter);
+        this.searchService = new SearchService(name, pathToDir, maxLvl, bloomFilterCache, metaInfo, masterBloomFilter);
         this.metaInfo = new MetaInfo(name, maxLvl);
     }
 
@@ -53,13 +56,13 @@ public class Index {
         this.memTableMax = 50000;
         this.bloomFilterCache = new LRUMap<>(50);
         this.memTable = new MemTable(path, name, memTableMax);
-        this.service = new MergeService(name, pathToDir, maxLvl, bloomFilterCache, metaInfo);
-        this.searchService = new SearchService(name, pathToDir, maxLvl, bloomFilterCache, metaInfo);
+        this.service = new MergeService(name, pathToDir, maxLvl, bloomFilterCache, metaInfo, masterBloomFilter);
+        this.searchService = new SearchService(name, pathToDir, maxLvl, bloomFilterCache, metaInfo, masterBloomFilter);
         this.metaInfo = new MetaInfo(name, maxLvl);
 
     }
 
-    private void ioInit(String path, String name) throws FileNotFoundException {
+    private void ioInit(String path, String name) throws IOException {
         File dir = new File(path);
         if (!dir.exists()) {
             dir.mkdir();
@@ -76,6 +79,17 @@ public class Index {
         } else  {
             this.metaInfo = new MetaInfo(name, maxLvl);
             metaInfo.writeInfoToDisk(pathToDir);
+        }
+        File masterFilterFile = new File(path + File.separator + name + "_master");
+        if(masterFilterFile.exists()) {
+            try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(masterFilterFile))) {
+                BloomFilterImpl bloomFilter = (BloomFilterImpl) objectInputStream.readObject();
+                this.masterBloomFilter = bloomFilter;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            this.masterBloomFilter = new BloomFilterImpl(10_000_000);
         }
     }
 

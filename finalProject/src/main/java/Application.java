@@ -5,8 +5,8 @@ import type.OperationEnum;
 public class Application {
 
     public static void main(String[] args) throws Exception {
-        Index index = indexInsertTest("smalLevel", 2, 25000);
-        //Index index = new Index("smalLevel","/Users/enanohin/IdeaProjects/otusAlgos/finalProject/testindex2",2, 40000);
+        //Index index = indexInsertTest("smalLevel", 2, 25000);
+        Index index = new Index("smalLevel","/Users/enanohin/IdeaProjects/otusAlgos/finalProject/testindex2",2, 25000);
         searchTest(index);
         index.stop();
     }
@@ -49,6 +49,7 @@ public class Application {
             test.getData(String.valueOf(new Random().nextInt()));
             i++;
         }
+
         long end = System.currentTimeMillis() - start;
         System.out.println(" index name  " + test.getName() + ", find 1_00_000 elems " + end);
     }

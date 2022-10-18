@@ -90,4 +90,8 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
         BloomFilterImpl obj1 = (BloomFilterImpl) obj;
         return bitSet.equals(obj1.getBitSet());
     }
+
+    public void clear() {
+        bitSet.clear();
+    }
 }

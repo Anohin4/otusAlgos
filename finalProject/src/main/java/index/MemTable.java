@@ -2,6 +2,8 @@ package index;
 
 import static index.utils.Utils.extractTreeToSet;
 
+import bloomfilter.BloomFilter;
+import bloomfilter.BloomFilterImpl;
 import index.io.JournalWriter;
 import index.io.TreeReader;
 import index.io.TreeReaderImpl;
@@ -20,6 +22,7 @@ public class MemTable {
     private File journal;
 
     private int memTableThreshold;
+    private BloomFilter bloomFilter;
     private ConcurrentLinkedQueue<JournalEntity> journalQueue;
     private JournalWriter journalWriter;
 
@@ -31,6 +34,7 @@ public class MemTable {
         this.journalWriter = new JournalWriter(journalQueue, journal);
         Thread thread = new Thread(journalWriter);
         thread.start();
+        this.bloomFilter = new BloomFilterImpl(memTableThreshold);
     }
 
     private void initiateJournal() throws IOException {
@@ -54,6 +58,7 @@ public class MemTable {
             rowEntity = new RowEntity(key, value, true);
         }
         mainTree.insert(rowEntity);
+        bloomFilter.add(key);
     }
 
     public boolean isFull() {
@@ -74,6 +79,9 @@ public class MemTable {
     }
 
     public void getValue(String indexValue, Set<String> result, Set<String> deletedRows) {
+        if(!bloomFilter.probablyContains(indexValue)) {
+            return;
+        }
         extractTreeToSet(mainTree, indexValue, result, deletedRows, true);
     }
 

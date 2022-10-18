@@ -17,8 +17,8 @@ import type.tree.Node;
 public class MergeService extends AbstractIOService {
 
     public MergeService(String indexName, String pathToDir, int maxLvl,
-            LRUMap<String, BloomFilter> bloomFilterCache, MetaInfo metaInfo) {
-        super(indexName, pathToDir, maxLvl, bloomFilterCache, metaInfo);
+            LRUMap<String, BloomFilter> bloomFilterCache, MetaInfo metaInfo, BloomFilter masterBloomFilter) {
+        super(indexName, pathToDir, maxLvl, bloomFilterCache, metaInfo, masterBloomFilter);
 
     }
 
@@ -48,14 +48,16 @@ public class MergeService extends AbstractIOService {
     private void writeTree(AvlTree treeToFlush, int currentLvl, int numberOfFile) throws IOException {
         writer.writeTreeToDisk(treeToFlush,
                 pathToDir + File.separator + indexName + getLvlTemplate(currentLvl) + numberOfFile);
-        BloomFilter bloomFilter = new BloomFilterImpl(treeToFlush);
-        String filterName =
-                pathToDir + File.separator + bloomFilterTemplateName + getLvlTemplate(currentLvl) + numberOfFile;
+        BloomFilter bloomFilter = new BloomFilterImpl(treeToFlush.getSize());
+        addValueToBloomFilters(bloomFilter,treeToFlush);
+        String filterName = getFileName(bloomFilterTemplateName, currentLvl, numberOfFile);
+
         if (!bloomFilterCache.isFull()) {
             bloomFilterCache.put(filterName, bloomFilter);
         }
         writer.writeBloomFilterToDisk(bloomFilter,
                 filterName);
+        writer.writeBloomFilterToDisk(masterBloomFilter, pathToDir + File.separator + indexName + "_master");
         metaInfo.addToLvl(currentLvl);
 
     }
@@ -99,22 +101,19 @@ public class MergeService extends AbstractIOService {
         return checkNextLvl(currentLvl);
     }
 
-
-    protected void removeObsoleteFiles(int lvl) {
-        lvl--;
-        File dir = new File(pathToDir);
-        while (lvl > 0) {
-            metaInfo.clearLvl(lvl);
-            final int lvlToDelete = lvl;
-            File[] files = dir.listFiles((dir1, name) -> name.startsWith(indexName + getLvlTemplate(lvlToDelete))
-                    || name.startsWith(bloomFilterTemplateName + getLvlTemplate(lvlToDelete)));
-            if (nonNull(files)) {
-                Arrays.stream(files).forEach(elem -> {
-                    bloomFilterCache.remove(elem.getName());
-                    elem.delete();
-                });
+    private void addValueToBloomFilters(BloomFilter bloomFilterToInsert, AvlTree avlTree) {
+        Queue<Node> nodes = new LinkedList<>();
+        nodes.add(avlTree.getRootNode());
+        while (!nodes.isEmpty()) {
+            Node poll = nodes.poll();
+            if (nonNull(poll.getLeftChild())) {
+                nodes.add(poll.getLeftChild());
             }
-            lvl--;
+            if (nonNull(poll.getRightChild())) {
+                nodes.add(poll.getRightChild());
+            }
+            bloomFilterToInsert.add(poll.getStorageValue().getIndexValue());
+            masterBloomFilter.add(poll.getStorageValue().getIndexValue());
         }
     }
 
