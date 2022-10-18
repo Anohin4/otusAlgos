@@ -16,12 +16,13 @@ import type.tree.Node;
 public class BloomFilterImpl implements BloomFilter, Serializable {
 
     private BitSet bitSet;
-    double fpr = 0.000001;
+    private double fpr = 0.000001;
 
 
-    int size;
+    private int size;
 
-    int numberOfHashFunc;
+    private int numberOfHashFunc;
+    private int storageAmount;
 
 
     public BloomFilterImpl(int maxElements) {
@@ -74,6 +75,7 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
 
     @Override
     public void add(String object) {
+        storageAmount++;
         for (int i = 0; i <= numberOfHashFunc; i++) {
             long hash32 = MurmurHash.hash64(object.getBytes(), object.getBytes().length, getHashSeed(i));
             long i1 = Math.abs(hash32) % size;
@@ -89,6 +91,11 @@ public class BloomFilterImpl implements BloomFilter, Serializable {
     public boolean equals(Object obj) {
         BloomFilterImpl obj1 = (BloomFilterImpl) obj;
         return bitSet.equals(obj1.getBitSet());
+    }
+
+    @Override
+    public int getStorageAmount() {
+        return storageAmount;
     }
 
     public void clear() {

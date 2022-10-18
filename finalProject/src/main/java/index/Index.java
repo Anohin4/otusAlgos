@@ -93,7 +93,7 @@ public class Index {
         }
     }
 
-    public void insert(OperationEnum operation, String key, String value) throws IOException {
+    public void insert(OperationEnum operation, String key, String value) throws IOException, InterruptedException {
         memTable.addValue(operation, key, value);
         if (memTable.isFull()) {
             flushMemTableToDisk();
@@ -108,7 +108,7 @@ public class Index {
         return result.stream().map(elem -> new RowEntity(indexValue, elem)).collect(Collectors.toList());
     }
 
-    private void flushMemTableToDisk() throws IOException {
+    private void flushMemTableToDisk() throws IOException, InterruptedException {
         service.rollingMerge(memTable.getMainTree());
         memTable.clearMemTable();
 
@@ -116,6 +116,10 @@ public class Index {
 
     public void stop() {
         memTable.stop();
+    }
+
+    public int getSize() {
+        return masterBloomFilter.getStorageAmount() + memTable.getSize();
     }
 
 

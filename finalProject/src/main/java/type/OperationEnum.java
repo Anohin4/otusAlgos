@@ -1,7 +1,7 @@
 package type;
 
 public enum OperationEnum {
-    INSERT("INSERT"), DELETE("DELETE");
+    INSERT("insert"), DELETE("delete");
     private String operation;
 
     OperationEnum(String operation) {

@@ -73,9 +73,10 @@ public class MemTable {
         return mainTree;
     }
 
-    public void clearMemTable() throws IOException {
+    public void clearMemTable() throws IOException, InterruptedException {
         this.mainTree = new AvlTree();
         journalWriter.clearFile();
+        bloomFilter.clear();
     }
 
     public void getValue(String indexValue, Set<String> result, Set<String> deletedRows) {

@@ -9,5 +9,7 @@ public interface BloomFilter {
     void add(String object);
 
     BitSet getBitSet();
+    void clear();
 
+    int getStorageAmount();
 }

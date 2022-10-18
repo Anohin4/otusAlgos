@@ -52,6 +52,6 @@ public class RowEntity {
     public String toString() {
         return "RowEntity " +
 
-                "indexValue='" + indexValue + '\'' + "," + "rowId='" + rowId;
+                "indexValue='" + indexValue + '\'' + "," + "rowId='" + rowId + "'";
     }
 }
