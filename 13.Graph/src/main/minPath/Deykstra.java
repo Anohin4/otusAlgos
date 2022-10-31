@@ -36,7 +36,8 @@ public class Deykstra {
             }
             nextVertex = getNextVertex();
         }
-        return getResult();
+        return null;
+        //return getResult();
     }
 
     private void processVertex() {
@@ -76,11 +77,11 @@ public class Deykstra {
 
     private Edge[] getResult(int startEdge, int edgeToFind) {
         SpaceArray<Edge> result = new SpaceArray<>();
-
+        return null;
     }
 
     private Edge getEdge(int reference) {
-
+        return null;
     }
 
 

@@ -1,19 +1,17 @@
-package main;
+package main.topologicSort;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import main.Utils;
 import main.minSpaningTree.Kruskal;
 import main.model.arrays.graphs.GraphWithVertex;
-import main.topologicSort.Tarjan;
 
 public class Test {
 
     public static void main(String[] args) throws IllegalAccessException, NoSuchFieldException {
         String path = "13.Graph/src/resources/graph3.txt";
         int[][] ints = Utils.readMatrixFromEdgesList(path, true);
-        System.out.println(Arrays.deepToString(Kruskal.getMinSpanningTree(ints)));
         System.out.println(Arrays.toString(Tarjan.topologicalSort(ints)));
+        System.out.println(Arrays.toString(Demucron.topologicalSort(ints)));
     }
 
     public static void runTests(int numberOfTests) {
